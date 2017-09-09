@@ -1,0 +1,137 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: reactor
+  labels:
+    app: reactor
+spec:
+  ports:
+  - port: 3330
+    name: http
+  selector:
+    app: reactor
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: reactor-v1
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: reactor
+        version: '1'
+    spec:
+      containers:
+      - name: details
+        image: gcr.io/iotope-early-access/reactor:1
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 3330
+---
+##################################################################################################
+#
+##################################################################################################
+apiVersion: v1
+kind: Service
+metadata:
+  name: a
+  labels:
+    app: reactor-service-a
+spec:
+  ports:
+  - port: 3331
+    name: http
+  selector:
+    app: reactor-service-a
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: reactor-service-a-v1
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: reactor-service-a
+        version: '1'
+    spec:
+      containers:
+      - name: reviews
+        image: gcr.io/iotope-early-access/reactor-service-a:1
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 3331
+---
+##################################################################################################
+#
+##################################################################################################
+apiVersion: v1
+kind: Service
+metadata:
+  name: b
+  labels:
+    app: reactor-service-b
+spec:
+  ports:
+  - port: 3332
+    name: http
+  selector:
+    app: reactor-service-b
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: reactor-service-b-v1
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: reactor-service-b
+        version: '1'
+    spec:
+      containers:
+      - name: reviews
+        image: gcr.io/iotope-early-access/reactor-service-b:1
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 3332
+---
+##################################################################################################
+#
+##################################################################################################
+apiVersion: v1
+kind: Service
+metadata:
+  name: c
+  labels:
+    app: reactor-service-c
+spec:
+  ports:
+  - port: 3333
+    name: http
+  selector:
+    app: reactor-service-c
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: reactor-service-c-v1
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: reactor-service-c
+        version: '1'
+    spec:
+      containers:
+      - name: reviews
+        image: gcr.io/iotope-early-access/reactor-service-c:1
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 3333
+---

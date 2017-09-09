@@ -1,0 +1,3 @@
+FROM alpine
+COPY gopath/bin/c c
+CMD ./c
