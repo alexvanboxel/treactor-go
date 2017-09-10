@@ -1,0 +1,3 @@
+FROM alpine
+COPY gopath/bin/role role
+CMD ./role

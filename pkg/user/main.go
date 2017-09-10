@@ -13,7 +13,6 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 		//CheckRedirect: redirectPolicyFunc,
 	}
 	trace := reactor.GetTrace(r)
-	reactor.CallService(client, "http://a:3340/reactor/user", trace)
 	reactor.CallService(client, "http://a:3341/reactor/role", trace)
 
 	version := reactor.Service{
@@ -28,10 +27,8 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 func main() {
 
 	r := mux.NewRouter()
-	r.HandleFunc("/reactor/a", HomeHandler)
-	//r.HandleFunc("/products", ProductsHandler)
-	//r.HandleFunc("/articles", ArticlesHandler)
+	r.HandleFunc("/reactor/user", HomeHandler)
 	http.Handle("/", r)
 
-	http.ListenAndServe(":3331", r)
+	http.ListenAndServe(":3340", r)
 }

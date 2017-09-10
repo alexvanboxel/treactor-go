@@ -5,58 +5,46 @@ import (
 	"net/http"
 	//"fmt"
 	"encoding/json"
-	"io/ioutil"
 	"github.com/alexvanboxel/reactor"
 
+	"fmt"
 )
 
 type ReactorInfo struct {
-	VersionA string
-	VersionB string
-	VersionC string
+	VersionUser string
+	VersionRole string
+	VersionA    string
+	VersionB    string
+	VersionC    string
 }
 
 
 func HomeHandler(w http.ResponseWriter, r *http.Request) {
-	//vars := mux.Vars(r)
-	//w.WriteHeader(http.StatusOK)
-	//fmt.Fprintf(w, "Category: %v\n", vars["category"])
-
-	ra, err := http.Get("http://a:3331/a")
-	if err != nil {
-		// handle error
+	client := &http.Client{
+		//CheckRedirect: redirectPolicyFunc,
 	}
-	defer ra.Body.Close()
-	body, err := ioutil.ReadAll(ra.Body)
 
-	va := reactor.Service{}
-	err = json.Unmarshal(body, &va)
-
-	rb, err := http.Get("http://b:3332/b")
-	if err != nil {
-		// handle error
+	fmt.Println("========")
+	for k, v := range r.Header {
+		fmt.Printf("%s = %s", k, v)
 	}
-	defer rb.Body.Close()
-	body, err = ioutil.ReadAll(rb.Body)
-	vb := reactor.Service{}
-	err = json.Unmarshal(body, &vb)
 
-	rc, err := http.Get("http://c:3333/c")
-	if err != nil {
-		// handle error
-	}
-	defer rc.Body.Close()
-	body, err = ioutil.ReadAll(rc.Body)
-	vc := reactor.Service{}
-	err = json.Unmarshal(body, &vc)
+	trace := reactor.GetTrace(r)
+	vu := reactor.CallService(client, "http://a:3340/reactor/user", trace)
+	vr := reactor.CallService(client, "http://a:3341/reactor/role", trace)
+	va := reactor.CallService(client, "http://a:3331/reactor/a", trace)
+	vb := reactor.CallService(client, "http://a:3332/reactor/b", trace)
+	vc := reactor.CallService(client, "http://a:3333/reactor/c", trace)
 
 	versions := ReactorInfo{
-		VersionA:va.Version,
-		VersionB:vb.Version,
-		VersionC:vc.Version,
+		VersionUser: vu.Version,
+		VersionRole: vr.Version,
+		VersionA:    va.Version,
+		VersionB:    vb.Version,
+		VersionC:    vc.Version,
 	}
 
-	js, _ := json.MarshalIndent(versions, "","\t")
+	js, _ := json.MarshalIndent(versions, "", "\t")
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(js)
 }

@@ -9,13 +9,6 @@ import (
 )
 
 func HomeHandler(w http.ResponseWriter, r *http.Request) {
-	client := &http.Client{
-		//CheckRedirect: redirectPolicyFunc,
-	}
-	trace := reactor.GetTrace(r)
-	reactor.CallService(client, "http://a:3340/reactor/user", trace)
-	reactor.CallService(client, "http://a:3341/reactor/role", trace)
-
 	version := reactor.Service{
 		Version: "1",
 	}
@@ -28,10 +21,10 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 func main() {
 
 	r := mux.NewRouter()
-	r.HandleFunc("/reactor/a", HomeHandler)
+	r.HandleFunc("/reactor/role", HomeHandler)
 	//r.HandleFunc("/products", ProductsHandler)
 	//r.HandleFunc("/articles", ArticlesHandler)
 	http.Handle("/", r)
 
-	http.ListenAndServe(":3331", r)
+	http.ListenAndServe(":3341", r)
 }

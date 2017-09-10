@@ -1,0 +1,27 @@
+type: route-rule
+name: a-default
+spec:
+  destination: a.default.svc.cluster.local
+  precedence: 1
+  route:
+  - tags:
+      version: '1'
+---
+type: route-rule
+name: b-default
+spec:
+  destination: b.default.svc.cluster.local
+  precedence: 1
+  route:
+  - tags:
+      version: '1'
+---
+type: route-rule
+name: c-default
+spec:
+  destination: c.default.svc.cluster.local
+  precedence: 1
+  route:
+  - tags:
+      version: '1'
+---
