@@ -6,11 +6,10 @@ import (
 	//"fmt"
 	"encoding/json"
 	"github.com/alexvanboxel/reactor"
-
-	"fmt"
 )
 
 type ReactorInfo struct {
+	Version     string
 	VersionUser string
 	VersionRole string
 	VersionA    string
@@ -18,16 +17,15 @@ type ReactorInfo struct {
 	VersionC    string
 }
 
-
 func HomeHandler(w http.ResponseWriter, r *http.Request) {
 	client := &http.Client{
 		//CheckRedirect: redirectPolicyFunc,
 	}
 
-	fmt.Println("========")
-	for k, v := range r.Header {
-		fmt.Printf("%s = %s", k, v)
-	}
+	//fmt.Println("========")
+	//for k, v := range r.Header {
+	//	fmt.Printf("%s = %s", k, v)
+	//}
 
 	trace := reactor.GetTrace(r)
 	vu := reactor.CallService(client, "http://user:3340/reactor/user", trace)
@@ -37,6 +35,7 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 	vc := reactor.CallService(client, "http://c:3333/reactor/c", trace)
 
 	versions := ReactorInfo{
+		Version:     "1",
 		VersionUser: vu.Version,
 		VersionRole: vr.Version,
 		VersionA:    va.Version,
