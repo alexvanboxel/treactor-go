@@ -25,3 +25,21 @@ spec:
   - tags:
       version: '1'
 ---
+type: route-rule
+name: user-default
+spec:
+  destination: user.default.svc.cluster.local
+  precedence: 1
+  route:
+  - tags:
+      version: '1'
+---
+type: route-rule
+name: role-default
+spec:
+  destination: role.default.svc.cluster.local
+  precedence: 1
+  route:
+  - tags:
+      version: '1'
+---

@@ -13,8 +13,8 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 		//CheckRedirect: redirectPolicyFunc,
 	}
 	trace := reactor.GetTrace(r)
-	reactor.CallService(client, "http://a:3340/reactor/user", trace)
-	reactor.CallService(client, "http://a:3341/reactor/role", trace)
+	reactor.CallService(client, "http://user:3340/reactor/user", trace)
+	reactor.CallService(client, "http://role:3341/reactor/role", trace)
 
 	version := reactor.Service{
 		Version: "1",

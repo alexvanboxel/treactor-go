@@ -135,3 +135,73 @@ spec:
         ports:
         - containerPort: 3333
 ---
+##################################################################################################
+#
+##################################################################################################
+apiVersion: v1
+kind: Service
+metadata:
+  name: user
+  labels:
+    app: reactor-user
+spec:
+  ports:
+  - port: 3340
+    name: http
+  selector:
+    app: reactor-user
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: reactor-user-v1
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: reactor-user
+        version: '1'
+    spec:
+      containers:
+      - name: reviews
+        image: gcr.io/iotope-early-access/reactor-user:1
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 3340
+---
+##################################################################################################
+#
+##################################################################################################
+apiVersion: v1
+kind: Service
+metadata:
+  name: role
+  labels:
+    app: reactor-role
+spec:
+  ports:
+  - port: 3341
+    name: http
+  selector:
+    app: reactor-role
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: reactor-role-v1
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: reactor-role
+        version: '1'
+    spec:
+      containers:
+      - name: reviews
+        image: gcr.io/iotope-early-access/reactor-role:1
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 3341
+---

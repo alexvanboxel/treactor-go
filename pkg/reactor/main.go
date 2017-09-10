@@ -30,11 +30,11 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	trace := reactor.GetTrace(r)
-	vu := reactor.CallService(client, "http://a:3340/reactor/user", trace)
-	vr := reactor.CallService(client, "http://a:3341/reactor/role", trace)
+	vu := reactor.CallService(client, "http://user:3340/reactor/user", trace)
+	vr := reactor.CallService(client, "http://role:3341/reactor/role", trace)
 	va := reactor.CallService(client, "http://a:3331/reactor/a", trace)
-	vb := reactor.CallService(client, "http://a:3332/reactor/b", trace)
-	vc := reactor.CallService(client, "http://a:3333/reactor/c", trace)
+	vb := reactor.CallService(client, "http://b:3332/reactor/b", trace)
+	vc := reactor.CallService(client, "http://c:3333/reactor/c", trace)
 
 	versions := ReactorInfo{
 		VersionUser: vu.Version,

@@ -1,0 +1,9 @@
+type: route-rule
+name: reactor-default
+spec:
+  destination: reactor.default.svc.cluster.local
+  precedence: 1
+  route:
+  - tags:
+      version: '1'
+---
