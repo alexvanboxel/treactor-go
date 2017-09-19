@@ -19,6 +19,7 @@ func GetTrace(r *http.Request) (map[string]string) {
 	trace["x-b3-sampled"] = r.Header.Get("x-b3-sampled")
 	trace["x-b3-flags"] = r.Header.Get("x-b3-flags")
 	trace["x-ot-span-context"] = r.Header.Get("x-ot-span-context")
+	trace["x-segment"] = r.Header.Get("x-segment")
 	return trace
 }
 

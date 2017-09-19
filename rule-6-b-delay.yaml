@@ -1,0 +1,13 @@
+type: route-rule
+name: rule-6-b-delay
+spec:
+  destination: b.default.svc.cluster.local
+  precedence: 2
+  route:
+  - tags:
+      version: '1'
+    weight: 100
+  httpFault:
+    delay:
+      percent: 75
+      fixedDelay: 5s

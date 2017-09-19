@@ -1,0 +1,13 @@
+type: route-rule
+name: rule-2-role-segment-test
+spec:
+  destination: role.default.svc.cluster.local
+  precedence: 2
+  match:
+    httpHeaders:
+      x-segment:
+        exact: "test"
+  route:
+  - tags:
+      version: '2'
+---

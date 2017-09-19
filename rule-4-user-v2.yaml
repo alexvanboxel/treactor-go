@@ -1,0 +1,9 @@
+type: route-rule
+name: user-default
+spec:
+  destination: user.default.svc.cluster.local
+  precedence: 1
+  route:
+  - tags:
+      version: '2'
+    weight: 100

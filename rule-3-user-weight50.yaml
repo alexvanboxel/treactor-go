@@ -1,7 +1,7 @@
 type: route-rule
-name: a-default
+name: user-default
 spec:
-  destination: a.default.svc.cluster.local
+  destination: user.default.svc.cluster.local
   precedence: 1
   route:
   - tags:
