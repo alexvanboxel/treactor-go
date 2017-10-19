@@ -1,0 +1,78 @@
+apiVersion: config.istio.io/v1alpha2
+kind: RouteRule
+metadata:
+  name: reactor-default
+spec:
+  destination:
+    name: reactor
+    namespace: reactor
+  precedence: 1
+  route:
+  - labels:
+      version: '1'
+---
+apiVersion: config.istio.io/v1alpha2
+kind: RouteRule
+metadata:
+  name: a-default
+spec:
+  destination:
+    name: a
+    namespace: reactor
+  precedence: 1
+  route:
+  - labels:
+      version: '1'
+---
+apiVersion: config.istio.io/v1alpha2
+kind: RouteRule
+metadata:
+  name: b-default
+spec:
+  destination:
+    name: b
+    namespace: reactor
+  precedence: 1
+  route:
+  - labels:
+      version: '1'
+---
+apiVersion: config.istio.io/v1alpha2
+kind: RouteRule
+metadata:
+  name: c-default
+spec:
+  destination:
+    name: c
+    namespace: reactor
+  precedence: 1
+  route:
+  - labels:
+      version: '1'
+---
+apiVersion: config.istio.io/v1alpha2
+kind: RouteRule
+metadata:
+  name: user-default
+spec:
+  destination:
+    name: user
+    namespace: reactor
+  precedence: 1
+  route:
+  - labels:
+      version: '1'
+---
+apiVersion: config.istio.io/v1alpha2
+kind: RouteRule
+metadata:
+  name: role-default
+spec:
+  destination:
+    name: role
+    namespace: reactor
+  precedence: 1
+  route:
+  - labels:
+      version: '1'
+---

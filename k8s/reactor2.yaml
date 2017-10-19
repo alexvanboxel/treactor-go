@@ -1,207 +1,189 @@
-apiVersion: v1
-kind: Service
-metadata:
-  name: reactor
-  labels:
-    app: reactor
-spec:
-  ports:
-  - port: 3330
-    name: http
-  selector:
-    app: reactor
----
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: reactor-v1
+  name: reactor-v2
+  namespace: reactor
 spec:
   replicas: 1
   template:
     metadata:
       labels:
         app: reactor
-        version: '1'
+        version: '2'
     spec:
       containers:
-      - name: details
-        image: gcr.io/iotope-early-access/reactor:1
+      - name: api
+        image: gcr.io/iotope-early-access/reactor:3
         imagePullPolicy: Always
+        env:
+          - name: PORT
+            value: '3330'
+          - name: NAME
+            value: 'reactor'
+          - name: VERSION
+            value: '2'
+          - name: MODE
+            value: '2'
         ports:
         - containerPort: 3330
 ---
 ##################################################################################################
 #
 ##################################################################################################
-apiVersion: v1
-kind: Service
-metadata:
-  name: a
-  labels:
-    app: reactor-service-a
-spec:
-  ports:
-  - port: 3331
-    name: http
-  selector:
-    app: reactor-service-a
----
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: reactor-service-a-v1
+  name: reactor-a-v2
+  namespace: reactor
 spec:
   replicas: 1
   template:
     metadata:
       labels:
-        app: reactor-service-a
-        version: '1'
+        app: reactor-a
+        version: '2'
     spec:
       containers:
-      - name: reviews
-        image: gcr.io/iotope-early-access/reactor-service-a:1
+      - name: api
+        image: gcr.io/iotope-early-access/reactor:3
         imagePullPolicy: Always
+        env:
+          - name: PORT
+            value: '3331'
+          - name: NAME
+            value: 'a'
+          - name: VERSION
+            value: '2'
+          - name: MODE
+            value: '2'
         ports:
         - containerPort: 3331
 ---
 ##################################################################################################
 #
 ##################################################################################################
-apiVersion: v1
-kind: Service
-metadata:
-  name: b
-  labels:
-    app: reactor-service-b
-spec:
-  ports:
-  - port: 3332
-    name: http
-  selector:
-    app: reactor-service-b
----
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: reactor-service-b-v1
+  name: reactor-b-v2
+  namespace: reactor
 spec:
   replicas: 1
   template:
     metadata:
       labels:
-        app: reactor-service-b
-        version: '1'
+        app: reactor-b
+        version: '2'
     spec:
       containers:
       - name: reviews
-        image: gcr.io/iotope-early-access/reactor-service-b:1
+        image: gcr.io/iotope-early-access/reactor:3
         imagePullPolicy: Always
+        env:
+          - name: PORT
+            value: '3332'
+          - name: NAME
+            value: 'b'
+          - name: VERSION
+            value: '2'
+          - name: MODE
+            value: '2'
         ports:
         - containerPort: 3332
 ---
 ##################################################################################################
 #
 ##################################################################################################
-apiVersion: v1
-kind: Service
-metadata:
-  name: c
-  labels:
-    app: reactor-service-c
-spec:
-  ports:
-  - port: 3333
-    name: http
-  selector:
-    app: reactor-service-c
----
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: reactor-service-c-v1
+  name: reactor-c-v2
+  namespace: reactor
 spec:
   replicas: 1
   template:
     metadata:
       labels:
-        app: reactor-service-c
-        version: '1'
+        app: reactor-c
+        version: '2'
     spec:
       containers:
-      - name: reviews
-        image: gcr.io/iotope-early-access/reactor-service-c:1
+      - name: api
+        image: gcr.io/iotope-early-access/reactor:3
         imagePullPolicy: Always
+        env:
+          - name: PORT
+            value: '3333'
+          - name: NAME
+            value: 'c'
+          - name: VERSION
+            value: '2'
+          - name: MODE
+            value: '2'
         ports:
         - containerPort: 3333
 ---
 ##################################################################################################
 #
 ##################################################################################################
-apiVersion: v1
-kind: Service
-metadata:
-  name: user
-  labels:
-    app: reactor-user
-spec:
-  ports:
-  - port: 3340
-    name: http
-  selector:
-    app: reactor-user
----
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: reactor-user-v1
+  name: reactor-user-v2
+  namespace: reactor
 spec:
   replicas: 1
   template:
     metadata:
       labels:
         app: reactor-user
-        version: '1'
+        version: '2'
     spec:
       containers:
-      - name: reviews
-        image: gcr.io/iotope-early-access/reactor-user:1
+      - name: api
+        image: gcr.io/iotope-early-access/reactor:3
         imagePullPolicy: Always
+        env:
+          - name: PORT
+            value: '3340'
+          - name: NAME
+            value: 'user'
+          - name: VERSION
+            value: '2'
+          - name: MODE
+            value: '2'
         ports:
         - containerPort: 3340
 ---
 ##################################################################################################
 #
 ##################################################################################################
-apiVersion: v1
-kind: Service
-metadata:
-  name: role
-  labels:
-    app: reactor-role
-spec:
-  ports:
-  - port: 3341
-    name: http
-  selector:
-    app: reactor-role
----
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: reactor-role-v1
+  name: reactor-role-v2
+  namespace: reactor
 spec:
   replicas: 1
   template:
     metadata:
       labels:
         app: reactor-role
-        version: '1'
+        version: '2'
     spec:
       containers:
       - name: reviews
-        image: gcr.io/iotope-early-access/reactor-role:1
+        image: gcr.io/iotope-early-access/reactor:3
         imagePullPolicy: Always
+        env:
+          - name: PORT
+            value: '3341'
+          - name: NAME
+            value: 'role'
+          - name: VERSION
+            value: '2'
+          - name: MODE
+            value: '2'
         ports:
         - containerPort: 3341
 ---

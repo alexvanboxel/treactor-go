@@ -1,0 +1,18 @@
+apiVersion: config.istio.io/v1alpha2
+kind: RouteRule
+metadata:
+  name: rule-2-role-segment-test
+spec:
+  destination:
+    name: role
+    namespace: reactor
+  precedence: 2
+  match:
+    request:
+      headers:
+        x-segment:
+          exact: "test"
+  route:
+  - labels:
+      version: '2'
+---

@@ -7,11 +7,12 @@ metadata:
   name: reactor-ingress
   annotations:
     kubernetes.io/ingress.class: "istio"
+  namespace: reactor
 spec:
   rules:
   - http:
       paths:
-      - path: /
+      - path: /reactor
         backend:
           serviceName: reactor
           servicePort: 3330

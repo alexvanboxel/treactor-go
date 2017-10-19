@@ -1,9 +1,0 @@
-steps:
-  - name: 'gcr.io/cloud-builders/go'
-    env:
-    - PROJECT_ROOT=github.com/alexvanboxel/reactor
-    args: ['install', 'github.com/alexvanboxel/reactor/pkg/a']
-  - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '--tag=gcr.io/$PROJECT_ID/reactor-service-a:1', '-f', 'Dockerfile-a', '.']
-  - name: 'gcr.io/cloud-builders/docker'
-    args: ['push', 'gcr.io/$PROJECT_ID/reactor-service-a:1']

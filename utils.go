@@ -31,6 +31,9 @@ func CallService(client *http.Client, service string, trace map[string]string) (
 	ra, err := client.Do(req)
 	//ra, err := http.Get("http://a:3331/a")
 	if err != nil {
+		return &Service{
+			Version:"-",
+		}
 		// handle error
 	}
 	defer ra.Body.Close()
