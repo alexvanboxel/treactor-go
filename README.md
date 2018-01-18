@@ -1,5 +1,9 @@
 
-
+gcloud container clusters create istio \
+    --enable-kubernetes-alpha \
+    --machine-type=n1-standard-2 \
+    --num-nodes=4 \
+    --no-enable-legacy-authorization
 
 
 
@@ -28,6 +32,6 @@ istioctl delete route-rules rule-3-user-weight50
 istioctl replace -f rule-4-user-v2.yaml
 istioctl delete route-rules rule-6-b-delay
 
-watch -n 1 -p -x curl -s http://23.251.142.212/reactor
-watch -n 1 -p -x curl -H "X-Segment: test" -s http://23.251.142.212/reactor
+watch -n 1 -p -x curl -s http://35.195.243.203/reactor
+watch -n 1 -p -x curl -H "X-Segment: test" -s http://35.195.243.203/reactor
 

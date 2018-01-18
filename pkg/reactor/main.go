@@ -8,6 +8,7 @@ import (
 	"github.com/alexvanboxel/reactor"
 	"os"
 	"fmt"
+	"github.com/alexvanboxel/reactor/chem"
 )
 
 var port = os.Getenv("PORT")
@@ -99,6 +100,11 @@ func ReactorHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+
+	elemts := chem.ReadElements()
+
+	fmt.Println(elemts)
+
 	fmt.Printf("Reactor (%s:%s) listening on port %s\n", name, version, port)
 	fmt.Printf("Mode: %s\n", mode)
 
