@@ -6,6 +6,7 @@ gcloud container clusters create istio \
     --no-enable-legacy-authorization
 
 
+curl -L https://git.io/getLatestIstio | sh -
 
 ```
 kubectl -n istio-system port-forward $(kubectl -n istio-system get pod -l app=grafana -o jsonpath='{.items[0].metadata.name}') 3500:3000 &

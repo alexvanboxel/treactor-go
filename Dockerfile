@@ -1,3 +1,4 @@
 FROM alpine
-COPY gopath/bin/reactor reactor
+COPY reactor reactor
+COPY elements.yaml elements.yaml
 CMD ./reactor

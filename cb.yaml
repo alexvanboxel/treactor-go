@@ -2,8 +2,10 @@ steps:
   - name: 'gcr.io/cloud-builders/go'
     env:
     - PROJECT_ROOT=github.com/alexvanboxel/reactor
-    args: ['install', 'github.com/alexvanboxel/reactor/pkg/reactor']
+    args: ['build', 'github.com/alexvanboxel/reactor/pkg/reactor']
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '--tag=gcr.io/$PROJECT_ID/reactor:3', '-f', 'Dockerfile', '.']
-  - name: 'gcr.io/cloud-builders/docker'
-    args: ['push', 'gcr.io/$PROJECT_ID/reactor:3']
+    args: [ 'build', '-t', '${_DOCKER_IMAGE}', '.' ]
+substitutions:
+  _DOCKER_IMAGE: eu.gcr.io/quantum-build/reactor:latest # default value
+images:
+- '${_DOCKER_IMAGE}'
