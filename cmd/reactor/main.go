@@ -1,28 +1,19 @@
 package main
 
 import (
-	"cloud.google.com/go/pubsub"
-	"context"
-	"github.com/alexvanboxel/reactor/pkg/execute"
-	"go.opencensus.io/plugin/ochttp"
-	"go.opencensus.io/trace"
 	"contrib.go.opencensus.io/exporter/stackdriver/propagation"
 	"encoding/json"
 	"fmt"
 	"github.com/alexvanboxel/reactor/pkg/chem"
 	"github.com/alexvanboxel/reactor/pkg/client"
+	"github.com/alexvanboxel/reactor/pkg/config"
+	"github.com/alexvanboxel/reactor/pkg/execute"
 	"github.com/alexvanboxel/reactor/pkg/reactor"
+	"go.opencensus.io/plugin/ochttp"
+	"go.opencensus.io/trace"
 	"log"
 	"net/http"
-	"os"
 )
-
-var port = os.Getenv("PORT")
-var version = os.Getenv("VERSION")
-var name = os.Getenv("NAME")
-var mode = os.Getenv("MODE")
-
-var gcpPubSub, _ = client.NewPubSub()
 
 type RequestCapture struct {
 	UrlPath  string            `json:"urlPath,string"`
@@ -51,22 +42,22 @@ func headersFromRequest(r *http.Request) (map[string]string) {
 }
 
 func HttpRequestCaptureHandler(w http.ResponseWriter, r *http.Request) {
-	capture := &RequestCapture{
-		UrlPath:  r.URL.RawPath,
-		UrlQuery: r.URL.RawQuery,
-		Header:   headersFromRequest(r),
-	}
-
-	js, _ := json.MarshalIndent(capture, "", "\t")
-	fmt.Println(string(js))
-
-	msg := pubsub.Message{
-		Data: js,
-	}
-	gcpPubSub.PostCaptured.Publish(context.Background(), &msg)
-
-	w.Header().Set("Content-Type", "application/json")
-	w.Write(js)
+	//capture := &RequestCapture{
+	//	UrlPath:  r.URL.RawPath,
+	//	UrlQuery: r.URL.RawQuery,
+	//	Header:   headersFromRequest(r),
+	//}
+	//
+	//js, _ := json.MarshalIndent(capture, "", "\t")
+	//fmt.Println(string(js))
+	//
+	//msg := pubsub.Message{
+	//	Data: js,
+	//}
+	////gcpPubSub.PostCaptured.Publish(context.Background(), &msg)
+	//
+	//w.Header().Set("Content-Type", "application/json")
+	//w.Write(js)
 
 }
 
@@ -85,7 +76,7 @@ func ReactorHandler(w http.ResponseWriter, r *http.Request) {
 	vc := reactor.CallService("http://c:3333/reactor/c", trace)
 
 	versions := ReactorInfo{
-		Version:     version,
+		Version:     config.Version,
 		VersionUser: vu.Version,
 		VersionRole: vr.Version,
 		VersionA:    va.Version,
@@ -109,6 +100,7 @@ func ReactorSplit(w http.ResponseWriter, r *http.Request) {
 	url := r.URL
 	_, _ = execute.Parse(url.Query().Get("molecule"))
 
+	client.Logger.Warning(ctx, "Test log")
 	reactor.CallPlane(ctx, 1, "2[U]")
 	//fmt.Println(formula)
 }
@@ -129,31 +121,31 @@ func ReactorElement(w http.ResponseWriter, r *http.Request) {
 	url := r.URL
 	_, _ = execute.Parse(url.Query().Get("molecule"))
 
+	client.Logger.Info(r.Context(), "Element log")
+
 	//fmt.Println(formula)
 }
 
 func main() {
-	reactor.Configure()
+	config.Configure()
 	client.GoogleCloudInit()
 	reactor.Init()
 
-	elemts := chem.ReadElements()
+	elements := chem.ReadElements()
+	fmt.Println(elements)
 
-	base := "/api/reactor"
-
-	fmt.Println(elemts)
-
-	fmt.Printf("Reactor (%s:%s) listening on port %s\n", name, version, port)
-	fmt.Printf("Mode: %s\n", mode)
+	base := "/reactor"
+	fmt.Printf("Reactor (%s:%s) listening on port %s\n", config.Name, config.Version, config.Port)
+	fmt.Printf("Mode: %s\n", config.Mode)
 
 	r := http.NewServeMux()
-	r.HandleFunc("/reactor/split", ReactorSplit)
-	r.HandleFunc("/reactor/plane", ReactorPlane)
-	r.HandleFunc("/reactor/element", ReactorElement)
+	r.HandleFunc(fmt.Sprintf("%s/split", base), ReactorSplit)
+	r.HandleFunc(fmt.Sprintf("%s/plane", base), ReactorPlane)
+	r.HandleFunc(fmt.Sprintf("%s/element", base), ReactorElement)
 	r.HandleFunc(fmt.Sprintf("%s/request/capture", base), HttpRequestCaptureHandler)
 	http.Handle("/", r)
 
-	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", port), &ochttp.Handler{
+	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", config.Port), &ochttp.Handler{
 		Handler:     r,
 		Propagation: &propagation.HTTPFormat{},
 	}))

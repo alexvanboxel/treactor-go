@@ -596,6 +596,7 @@ type Entry struct {
 	// if any. If it contains a relative resource name, the name is assumed to
 	// be relative to //tracing.googleapis.com.
 	Trace string
+	SpanId string
 
 	// Optional. Source code location information associated with the log entry,
 	// if any.
@@ -825,6 +826,7 @@ func (l *Logger) toLogEntry(e Entry) (*logpb.LogEntry, error) {
 		Operation:      e.Operation,
 		Labels:         e.Labels,
 		Trace:          e.Trace,
+		SpanId:			e.SpanId,
 		Resource:       e.Resource,
 		SourceLocation: e.SourceLocation,
 	}

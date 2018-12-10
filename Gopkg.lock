@@ -2,7 +2,7 @@
 
 
 [[projects]]
-  digest = "1:e86bab7bf362f79f44d7dd912cd80d1cb3de8c98bd0f8fa1b483dc6de7baea01"
+  digest = "1:4dbcf7d4384f04839c61ec66d22c0c27d7c7965748dde197ce8cd02394b47861"
   name = "cloud.google.com/go"
   packages = [
     "compute/metadata",
@@ -13,6 +13,7 @@
     "logging/apiv2",
     "logging/internal",
     "monitoring/apiv3",
+    "profiler",
     "pubsub",
     "pubsub/apiv1",
     "pubsub/internal/distribution",
@@ -97,6 +98,14 @@
   pruneopts = "UT"
   revision = "aa810b61a9c79d51363740d207bb46cf8e620ed5"
   version = "v1.2.0"
+
+[[projects]]
+  branch = "master"
+  digest = "1:089d56c0adb79140365b5c86815ce97233986da6f3a525c6b706773e4b83876f"
+  name = "github.com/google/pprof"
+  packages = ["profile"]
+  pruneopts = "UT"
+  revision = "3ea8567a2e5752420fc544d2e2ad249721768934"
 
 [[projects]]
   digest = "1:e04cc716992a302cacf6d726409a05aa9546241998b24356d6dd0f01bc5a374e"
@@ -308,7 +317,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:e8ae2ab1f6acee20586e7ae6cb3998ee332af6a47cf732a5dc0e5ef13fbff203"
+  digest = "1:620f85ca402543e1557a7480553537512d77dae83563a7aea5fea99d3f84ed55"
   name = "google.golang.org/genproto"
   packages = [
     "googleapis/api/annotations",
@@ -316,12 +325,14 @@
     "googleapis/api/label",
     "googleapis/api/metric",
     "googleapis/api/monitoredres",
+    "googleapis/devtools/cloudprofiler/v2",
     "googleapis/devtools/cloudtrace/v2",
     "googleapis/iam/v1",
     "googleapis/logging/type",
     "googleapis/logging/v2",
     "googleapis/monitoring/v3",
     "googleapis/pubsub/v1",
+    "googleapis/rpc/errdetails",
     "googleapis/rpc/status",
     "protobuf/field_mask",
   ]
@@ -381,7 +392,9 @@
   analyzer-name = "dep"
   analyzer-version = 1
   input-imports = [
+    "cloud.google.com/go/compute/metadata",
     "cloud.google.com/go/logging",
+    "cloud.google.com/go/profiler",
     "cloud.google.com/go/pubsub",
     "contrib.go.opencensus.io/exporter/stackdriver",
     "contrib.go.opencensus.io/exporter/stackdriver/propagation",
