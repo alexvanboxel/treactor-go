@@ -1,7 +1,14 @@
 package execute
 
-type Plan struct {
-	Mode   string
-	Blocks []Plan
+type Plan interface {
 }
 
+type Repeat struct {
+	times int
+	mode  string
+	block Plan
+}
+
+type KeyValue struct {
+	kv map[string]string
+}

@@ -112,6 +112,7 @@ func ReactorPlane(w http.ResponseWriter, r *http.Request) {
 
 	reactor.CallElement(r.Context(), "U")
 	//fmt.Println(formula)
+	client.Logger.Error(r.Context(), r, "Full error?")
 }
 
 func ReactorElement(w http.ResponseWriter, r *http.Request) {

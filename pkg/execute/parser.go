@@ -1,6 +1,7 @@
 package execute
 
 import (
+	"errors"
 	"io"
 	"strconv"
 	"strings"
@@ -42,51 +43,59 @@ func (p *Parser) scan() (tok Token, lit string) {
 // unscan pushes the previously read token back onto the buffer.
 func (p *Parser) unscan() { p.buf.n = 1 }
 
-func (p *Parser) parseKeyValues() (plan *Plan, err error) {
-	token, _ := p.scan()
-	if token == WORD {
-
+func (p *Parser) parseKeyValues(kv map[string]string) (out map[string]string, err error) {
+	token, key := p.scan()
+	if token != WORD {
+		return nil, errors.New("KV need key")
 	}
 	token, _ = p.scan()
-	if token == COLON {
-
+	if token != COLON {
+		return nil, errors.New("KV need :")
 	}
-	token, _ = p.scan()
-	if token == WORD {
-
+	token, value := p.scan()
+	if token == WORD || token == NUMBER {
+		kv[key] = value
+	} else {
+		return nil, errors.New("KV needs value")
 	}
 
 	token, _ = p.scan()
 	if token == COMMA {
-		p.parseKeyValues()
+		return p.parseKeyValues(kv)
+	} else {
+		p.unscan()
 	}
-
-
-
-
-	return nil, nil
+	return kv, nil
 }
 
-func (p *Parser) parseBlockContent() (plan *Plan, err error) {
+func (p *Parser) parseBlockContent() (plan Plan, err error) {
 	token, _ := p.scan()
 	if token == WORD {
-
 
 	} else {
-		// err
+		return nil, errors.New("")
 	}
 
 	token, _ = p.scan()
 	if token == COMMA {
-		p.parseKeyValues()
+		_, err := p.parseKeyValues(make(map[string]string))
+		if err != nil {
+			return nil, err
+		}
+		token, _ = p.scan()
+	}
+
+	if token != BLOCK_END {
+		return nil, errors.New("Expected Block End")
 	}
 	return nil, nil
 }
 
-func (p *Parser) parseBlock() (plan *Plan, err error) {
+func (p *Parser) parseBlock() (plan Plan, err error) {
 
 	times := 1
 	mode := "s"
+	var next Plan
 
 	token, val := p.scan()
 
@@ -102,7 +111,7 @@ func (p *Parser) parseBlock() (plan *Plan, err error) {
 		} else if val == "s" {
 
 		} else {
-			return nil, nil
+			return nil, errors.New("Only s or p accepted")
 		}
 
 		token, val = p.scan()
@@ -111,17 +120,30 @@ func (p *Parser) parseBlock() (plan *Plan, err error) {
 		token, val = p.scan()
 		if isStartBlock(token) {
 			p.unscan()
-			_, _ = p.parseBlock()
+			next, err = p.parseBlock()
+			if err != nil {
+				return nil, err
+			}
 		} else {
-			_, _ = p.parseBlockContent()
+			p.unscan()
+			next, err = p.parseBlockContent()
+			if err != nil {
+				return nil, err
+			}
 		}
 		token, val = p.scan()
 	} else {
-		// err
+		return nil, errors.New("Unknown token for block")
 	}
 
-	_ = times
-	_ = mode
+	if times > 1 {
+		return &Repeat{
+			times: times,
+			mode:  mode,
+			block: next,
+		}, nil
+	}
+
 	return nil, nil
 
 }
@@ -133,9 +155,8 @@ func isStartBlock(token Token) bool {
 	return false
 }
 
-func Parse(molecule string) (plan *Plan, err error) {
+func Parse(molecule string) (plan Plan, err error) {
 
 	parser := NewParser(strings.NewReader(molecule))
-	parser.parseBlock()
-	return nil, nil
+	return parser.parseBlock()
 }
