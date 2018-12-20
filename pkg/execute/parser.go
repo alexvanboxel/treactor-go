@@ -1,6 +1,7 @@
 package execute
 
 import (
+	"bytes"
 	"errors"
 	"io"
 	"strconv"
@@ -68,34 +69,30 @@ func (p *Parser) parseKeyValues(kv map[string]string) (out map[string]string, er
 	return kv, nil
 }
 
-func (p *Parser) parseBlockContent() (plan Plan, err error) {
-	token, _ := p.scan()
-	if token == WORD {
+func (p *Parser) parseBlockContent() (content string, err error) {
+	var buffer bytes.Buffer
 
-	} else {
-		return nil, errors.New("")
-	}
-
-	token, _ = p.scan()
-	if token == COMMA {
-		_, err := p.parseKeyValues(make(map[string]string))
-		if err != nil {
-			return nil, err
+	for depth := 1; depth > 0;
+	{
+		token, str := p.scan()
+		if token == BLOCK_START {
+			depth = depth + 1
+			buffer.Write([]byte(str))
+		} else if token == BLOCK_END {
+			depth = depth - 1
+			if depth > 0 {
+				buffer.Write([]byte(str))
+			}
+		} else {
+			buffer.Write([]byte(str))
 		}
-		token, _ = p.scan()
 	}
-
-	if token != BLOCK_END {
-		return nil, errors.New("Expected Block End")
-	}
-	return nil, nil
+	return buffer.String(), nil
 }
 
 func (p *Parser) parseBlock() (plan Plan, err error) {
-
 	times := 1
 	mode := "s"
-	var next Plan
 
 	token, val := p.scan()
 
@@ -116,47 +113,54 @@ func (p *Parser) parseBlock() (plan Plan, err error) {
 
 		token, val = p.scan()
 	}
+	var content string
 	if token == BLOCK_START {
-		token, val = p.scan()
-		if isStartBlock(token) {
-			p.unscan()
-			next, err = p.parseBlock()
-			if err != nil {
-				return nil, err
-			}
-		} else {
-			p.unscan()
-			next, err = p.parseBlockContent()
-			if err != nil {
-				return nil, err
-			}
+		content, err = p.parseBlockContent()
+		if err != nil {
+			errors.New("")
 		}
+		_ = content
 		token, val = p.scan()
 	} else {
 		return nil, errors.New("Unknown token for block")
 	}
 
-	if times > 1 {
-		return &Repeat{
-			times: times,
-			mode:  mode,
-			block: next,
+	var kv map[string]string
+	if token == COMMA {
+		kv, err = p.parseKeyValues(make(map[string]string))
+		if err != nil {
+			return nil, err
+		}
+		token, _ = p.scan()
+	} else {
+		kv = make(map[string]string)
+	}
+
+	block := &Block{
+		times: times,
+		mode:  mode,
+		block: content,
+		kv:    kv,
+	}
+
+	if token == PLUS || token == MULTIPLY {
+		next, err := p.parseBlock()
+		if err != nil {
+			return nil, err
+		}
+
+		return &Operator{
+			operand: token,
+			left:    block,
+			right:   next,
 		}, nil
 	}
 
-	return nil, nil
+	return block, nil
 
-}
-
-func isStartBlock(token Token) bool {
-	if token == BLOCK_START || token == NUMBER {
-		return true
-	}
-	return false
 }
 
 func Parse(molecule string) (plan Plan, err error) {
-
 	parser := NewParser(strings.NewReader(molecule))
 	return parser.parseBlock()
 }
