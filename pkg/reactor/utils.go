@@ -3,15 +3,17 @@ package reactor
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
+	"strings"
 )
 
 type Service struct {
 	Version string
 }
 
-func GetTrace(r *http.Request) (map[string]string) {
+func GetTrace(r *http.Request) map[string]string {
 	trace := make(map[string]string, 0)
 	trace["x-request-id"] = r.Header.Get("x-request-id")
 	trace["x-b3-traceid"] = r.Header.Get("x-b3-traceid")
@@ -24,7 +26,7 @@ func GetTrace(r *http.Request) (map[string]string) {
 	return trace
 }
 
-func CallService(service string, trace map[string]string) (*Service) {
+func CallService(service string, trace map[string]string) *Service {
 	req, _ := http.NewRequest("GET", service, nil)
 	for k, v := range trace {
 		req.Header.Set(k, v)
@@ -45,15 +47,19 @@ func CallService(service string, trace map[string]string) (*Service) {
 	return &va
 }
 
-func CallPlane(context context.Context, plane int, service string) {
-	req, _ := http.NewRequest("GET", "http://localhost:3330/reactor/plane", nil)
+func CallPlane(context context.Context, orbit int, molecule string) {
+	url := fmt.Sprintf("http://localhost:3330/reactor/orbit/%d?molecule=%s", orbit, molecule)
+	req, _ := http.NewRequest("GET", url, nil)
 	req = req.WithContext(context)
 	ra, _ := HttpClient.Do(req)
 	defer ra.Body.Close()
 }
 
-func CallElement(context context.Context, element string) {
-	req, _ := http.NewRequest("GET", "http://localhost:3330/reactor/element", nil)
+func CallElement(context context.Context, atom string) {
+	full := atom
+	atom = strings.Split(full, ",")[0]
+	url := fmt.Sprintf("http://localhost:3330/reactor/atom/%s?atom=%s", atom, full)
+	req, _ := http.NewRequest("GET", url, nil)
 	req = req.WithContext(context)
 	ra, _ := HttpClient.Do(req)
 	defer ra.Body.Close()
