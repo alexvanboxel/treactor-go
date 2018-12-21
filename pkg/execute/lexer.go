@@ -21,7 +21,7 @@ const (
 
 	// Misc characters
 	MULTIPLY  // *
-	PLUS      // +
+	PLUS      // ^
 	COMMA     // ,
 	COLON     // :
 
@@ -93,8 +93,8 @@ func (s *Scanner) Scan() (tok Token, lit string) {
 		return EOF, ""
 	case '*':
 		return MULTIPLY, string(ch)
-	case '+':
-		return MULTIPLY, string(ch)
+	case '^':
+		return PLUS, string(ch)
 	case ',':
 		return COMMA, string(ch)
 	case ':':

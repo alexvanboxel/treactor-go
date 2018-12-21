@@ -15,8 +15,8 @@ func TestSuccess(t *testing.T) {
 		{"5s[Ur]", "5s[Ur]"},
 		{"5[Ur,log:1]", "5s[Ur,log:1]"},
 		{"5[Ur,log:1,xyz:4]", "5s[Ur,log:1,xyz:4]"},
-		{"5[Ur,log:1,xyz:4]+5[Ur,log:1,xyz:4]", "5s[Ur,log:1,xyz:4]+5s[Ur,log:1,xyz:4]"},
-		{"2[5[Ur,log:1,xyz:4]+5[Ur,log:1,xyz:4]],x:1,y:2", "2s[5[Ur,log:1,xyz:4]+5[Ur,log:1,xyz:4]],x:1,y:2"},
+		{"5[Ur,log:1,xyz:4]^5[Ur,log:1,xyz:4]", "5s[Ur,log:1,xyz:4]^5s[Ur,log:1,xyz:4]"},
+		{"2[5[Ur,log:1,xyz:4]^5[Ur,log:1,xyz:4]],x:1,y:2", "2s[5[Ur,log:1,xyz:4]^5[Ur,log:1,xyz:4]],x:1,y:2"},
 	} {
 		t.Logf(test.in)
 		plan, err := Parse(test.in)

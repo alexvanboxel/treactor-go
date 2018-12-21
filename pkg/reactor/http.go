@@ -62,21 +62,20 @@ func ReactorAtom(w http.ResponseWriter, r *http.Request) {
 func Serve() {
 	atoms := chem.NewAtoms()
 
-	base := "/reactor"
 	fmt.Printf("Reactor (%s:%s) listening on port %s\n", config.Name, config.Version, config.Port)
 	fmt.Printf("Mode: %s\n", config.Mode)
 
 	r := http.NewServeMux()
-	r.HandleFunc(fmt.Sprintf("%s/split", base), ReactorSplit)
-	r.HandleFunc(fmt.Sprintf("%s/orbit", base), ReactorOrbit)
-	r.HandleFunc(fmt.Sprintf("%s/orbit/1", base), ReactorOrbit)
-	r.HandleFunc(fmt.Sprintf("%s/orbit/2", base), ReactorOrbit)
-	r.HandleFunc(fmt.Sprintf("%s/orbit/3", base), ReactorOrbit)
-	r.HandleFunc(fmt.Sprintf("%s/orbit/4", base), ReactorOrbit)
-	r.HandleFunc(fmt.Sprintf("%s/orbit/5", base), ReactorOrbit)
-	r.HandleFunc(fmt.Sprintf("%s/orbit/inf", base), ReactorOrbit)
+	r.HandleFunc(fmt.Sprintf("%s/split", config.Base), ReactorSplit)
+	r.HandleFunc(fmt.Sprintf("%s/orbit", config.Base), ReactorOrbit)
+	r.HandleFunc(fmt.Sprintf("%s/orbit/1", config.Base), ReactorOrbit)
+	r.HandleFunc(fmt.Sprintf("%s/orbit/2", config.Base), ReactorOrbit)
+	r.HandleFunc(fmt.Sprintf("%s/orbit/3", config.Base), ReactorOrbit)
+	r.HandleFunc(fmt.Sprintf("%s/orbit/4", config.Base), ReactorOrbit)
+	r.HandleFunc(fmt.Sprintf("%s/orbit/5", config.Base), ReactorOrbit)
+	r.HandleFunc(fmt.Sprintf("%s/orbit/inf", config.Base), ReactorOrbit)
 	for sym := range atoms.Symbols {
-		r.HandleFunc(fmt.Sprintf("%s/atom/%s", base, sym), ReactorAtom)
+		r.HandleFunc(fmt.Sprintf("%s/atom/%s", config.Base, sym), ReactorAtom)
 	}
 	http.Handle("/", r)
 

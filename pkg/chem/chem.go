@@ -1,7 +1,7 @@
 package chem
 
 import (
-	"fmt"
+	"github.com/alexvanboxel/reactor/pkg/config"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"log"
@@ -44,7 +44,9 @@ func readElements() elements {
 }
 
 type Atom struct {
-	Symbols string
+	Symbol  string
+	Service string
+	Port    string
 }
 
 type Atoms struct {
@@ -54,12 +56,19 @@ type Atoms struct {
 func (a *Atoms) read() {
 	a.Symbols = make(map[string]Atom)
 	elements := readElements()
-	fmt.Println(elements)
 
 	for _, e := range elements.Elements {
-		a.Symbols[e.Symbol] = Atom{
-			Symbols: e.Symbol,
+		atom := Atom{
+			Symbol: e.Symbol,
 		}
+		if config.Mode == "local" {
+			atom.Service = "localhost"
+			atom.Port = config.Port
+		} else {
+			log.Fatal("Only local is supported")
+		}
+
+		a.Symbols[e.Symbol] = atom
 	}
 }
 

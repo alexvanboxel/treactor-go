@@ -3,6 +3,7 @@ package execute
 import (
 	"fmt"
 	"github.com/alexvanboxel/reactor/pkg/client"
+	"github.com/alexvanboxel/reactor/pkg/config"
 	"go.opencensus.io/trace"
 	"golang.org/x/net/context"
 	"net/http"
@@ -39,7 +40,7 @@ func (o *Block) callOrbit(ctx context.Context, wg *sync.WaitGroup) {
 	defer wg.Done()
 	ctx, span := trace.StartSpan(ctx, "Reactor.Block.callOrbit")
 	defer span.End()
-	CallOrbit(ctx, 1, o.block)
+	CallOrbit(ctx, o.block)
 }
 
 func (o *Block) Execute(ctx context.Context) {
@@ -111,8 +112,14 @@ func (o *Operator) String() string {
 	return o.left.String() + "?" + o.right.String()
 }
 
-func CallOrbit(context context.Context, orbit int, molecule string) {
-	url := fmt.Sprintf("http://localhost:3330/reactor/orbit/%d?molecule=%s", orbit, molecule)
+func CallOrbit(context context.Context, molecule string) {
+	next := config.NextOrbit()
+	var url string
+	if config.IsLocal() {
+		url = fmt.Sprintf("http://localhost:%s%s/orbit/%s?molecule=%s", config.Port, config.Base, next, molecule)
+	} else {
+		url = fmt.Sprintf("http://orbit-%s%s%s/orbit/%s?symbol=%s", next, config.Base, next, molecule)
+	}
 	req, _ := http.NewRequest("GET", url, nil)
 	req = req.WithContext(context)
 	ra, err := client.HttpClient.Do(req)
@@ -123,10 +130,15 @@ func CallOrbit(context context.Context, orbit int, molecule string) {
 	defer ra.Body.Close()
 }
 
-func CallElement(context context.Context, atom string) {
-	full := atom
-	atom = strings.Split(full, ",")[0]
-	url := fmt.Sprintf("http://localhost:3330/reactor/atom/%s?atom=%s", atom, full)
+func CallElement(context context.Context, symbol string) {
+	full := symbol
+	symbol = strings.Split(full, ",")[0]
+	var url string
+	if config.IsLocal() {
+		url = fmt.Sprintf("http://localhost:%s%s/atom/%s?symbol=%s", config.Port, config.Base, symbol, full)
+	} else {
+		url = fmt.Sprintf("http://%s%s/atom/%s?symbol=%s", symbol, config.Base, symbol, full)
+	}
 	req, _ := http.NewRequest("GET", url, nil)
 	req = req.WithContext(context)
 	ra, err := client.HttpClient.Do(req)

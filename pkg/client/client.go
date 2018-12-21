@@ -8,17 +8,9 @@ import (
 
 var HttpClient *http.Client
 
-func Init() {
-	GoogleCloudInit()
-
+func ClientInit() {
 	octr := &ochttp.Transport{
 		Propagation: &propagation.HTTPFormat{},
 	}
-
-	//tr := &http.Transport{
-	//	MaxIdleConns:       10,
-	//	IdleConnTimeout:    30 * time.Second,
-	//	DisableCompression: true,
-	//}
 	HttpClient = &http.Client{Transport: octr}
 }
