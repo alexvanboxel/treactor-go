@@ -1,12 +1,10 @@
 package reactor
 
 import (
-	"context"
 	"encoding/json"
-	"fmt"
+	"github.com/alexvanboxel/reactor/pkg/client"
 	"io/ioutil"
 	"net/http"
-	"strings"
 )
 
 type Service struct {
@@ -31,7 +29,7 @@ func CallService(service string, trace map[string]string) *Service {
 	for k, v := range trace {
 		req.Header.Set(k, v)
 	}
-	ra, err := HttpClient.Do(req)
+	ra, err := client.HttpClient.Do(req)
 	//ra, err := http.Get("http://a:3331/a")
 	if err != nil {
 		return &Service{
@@ -45,30 +43,4 @@ func CallService(service string, trace map[string]string) *Service {
 	va := Service{}
 	err = json.Unmarshal(body, &va)
 	return &va
-}
-
-func CallOrbit(context context.Context, orbit int, molecule string) {
-	url := fmt.Sprintf("http://localhost:3330/reactor/orbit/%d?molecule=%s", orbit, molecule)
-	req, _ := http.NewRequest("GET", url, nil)
-	req = req.WithContext(context)
-	ra, err := HttpClient.Do(req)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	defer ra.Body.Close()
-}
-
-func CallElement(context context.Context, atom string) {
-	full := atom
-	atom = strings.Split(full, ",")[0]
-	url := fmt.Sprintf("http://localhost:3330/reactor/atom/%s?atom=%s", atom, full)
-	req, _ := http.NewRequest("GET", url, nil)
-	req = req.WithContext(context)
-	ra, err := HttpClient.Do(req)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	defer ra.Body.Close()
 }

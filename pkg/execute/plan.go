@@ -1,10 +1,13 @@
 package execute
 
 import (
-	"github.com/alexvanboxel/reactor/pkg/reactor"
+	"fmt"
+	"github.com/alexvanboxel/reactor/pkg/client"
 	"go.opencensus.io/trace"
 	"golang.org/x/net/context"
+	"net/http"
 	"strconv"
+	"strings"
 	"sync"
 	"unicode"
 )
@@ -25,22 +28,19 @@ func (o *Block) isAtom() bool {
 	return unicode.IsLetter(rune(o.block[0]))
 }
 
-
 func (o *Block) callElement(ctx context.Context, wg *sync.WaitGroup) {
 	defer wg.Done()
 	ctx, span := trace.StartSpan(ctx, "Reactor.Block.callElement")
 	defer span.End()
-	reactor.CallElement(ctx, o.block)
+	CallElement(ctx, o.block)
 }
 
 func (o *Block) callOrbit(ctx context.Context, wg *sync.WaitGroup) {
 	defer wg.Done()
 	ctx, span := trace.StartSpan(ctx, "Reactor.Block.callOrbit")
 	defer span.End()
-	reactor.CallOrbit(ctx, 1, o.block)
+	CallOrbit(ctx, 1, o.block)
 }
-
-
 
 func (o *Block) Execute(ctx context.Context) {
 	ctx, span := trace.StartSpan(ctx, "Reactor.Block")
@@ -48,7 +48,7 @@ func (o *Block) Execute(ctx context.Context) {
 	wg := sync.WaitGroup{}
 	wg.Add(o.times)
 	if o.mode == "s" {
-		for i:=1;i<=o.times;i++ {
+		for i := 1; i <= o.times; i++ {
 			if o.isAtom() {
 				o.callElement(ctx, &wg)
 			} else {
@@ -56,7 +56,7 @@ func (o *Block) Execute(ctx context.Context) {
 			}
 		}
 	} else if o.mode == "p" {
-		for i:=1;i<=o.times;i++ {
+		for i := 1; i <= o.times; i++ {
 			if o.isAtom() {
 				go o.callElement(ctx, &wg)
 			} else {
@@ -109,4 +109,30 @@ func (o *Operator) execute(ctx context.Context, wg *sync.WaitGroup, plan Plan) {
 
 func (o *Operator) String() string {
 	return o.left.String() + "?" + o.right.String()
+}
+
+func CallOrbit(context context.Context, orbit int, molecule string) {
+	url := fmt.Sprintf("http://localhost:3330/reactor/orbit/%d?molecule=%s", orbit, molecule)
+	req, _ := http.NewRequest("GET", url, nil)
+	req = req.WithContext(context)
+	ra, err := client.HttpClient.Do(req)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	defer ra.Body.Close()
+}
+
+func CallElement(context context.Context, atom string) {
+	full := atom
+	atom = strings.Split(full, ",")[0]
+	url := fmt.Sprintf("http://localhost:3330/reactor/atom/%s?atom=%s", atom, full)
+	req, _ := http.NewRequest("GET", url, nil)
+	req = req.WithContext(context)
+	ra, err := client.HttpClient.Do(req)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	defer ra.Body.Close()
 }

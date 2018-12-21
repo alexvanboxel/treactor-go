@@ -7,7 +7,6 @@ import (
 	"github.com/alexvanboxel/reactor/pkg/client"
 	"github.com/alexvanboxel/reactor/pkg/config"
 	"github.com/alexvanboxel/reactor/pkg/execute"
-	"github.com/alexvanboxel/reactor/pkg/reactor"
 	"go.opencensus.io/plugin/ochttp"
 	"go.opencensus.io/trace"
 	"log"
@@ -62,8 +61,7 @@ func ReactorAtom(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	config.Configure()
-	client.GoogleCloudInit()
-	reactor.Init()
+	client.Init()
 
 	elements := chem.ReadElements()
 	fmt.Println(elements)

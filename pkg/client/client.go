@@ -1,4 +1,4 @@
-package reactor
+package client
 
 import (
 	"go.opencensus.io/exporter/stackdriver/propagation"
@@ -9,9 +9,10 @@ import (
 var HttpClient *http.Client
 
 func Init() {
+	GoogleCloudInit()
 
 	octr := &ochttp.Transport{
-		Propagation:&propagation.HTTPFormat{},
+		Propagation: &propagation.HTTPFormat{},
 	}
 
 	//tr := &http.Transport{
