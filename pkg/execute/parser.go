@@ -103,11 +103,9 @@ func (p *Parser) parseBlock() (plan Plan, err error) {
 		times = 1
 	}
 	if token == WORD {
-		if val == "p" {
-
-		} else if val == "s" {
-
-		} else {
+		if val == "p" || val == "s" {
+			mode = val
+  		} else {
 			return nil, errors.New("Only s or p accepted")
 		}
 

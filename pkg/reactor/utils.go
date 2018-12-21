@@ -47,11 +47,15 @@ func CallService(service string, trace map[string]string) *Service {
 	return &va
 }
 
-func CallPlane(context context.Context, orbit int, molecule string) {
+func CallOrbit(context context.Context, orbit int, molecule string) {
 	url := fmt.Sprintf("http://localhost:3330/reactor/orbit/%d?molecule=%s", orbit, molecule)
 	req, _ := http.NewRequest("GET", url, nil)
 	req = req.WithContext(context)
-	ra, _ := HttpClient.Do(req)
+	ra, err := HttpClient.Do(req)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
 	defer ra.Body.Close()
 }
 
@@ -61,6 +65,10 @@ func CallElement(context context.Context, atom string) {
 	url := fmt.Sprintf("http://localhost:3330/reactor/atom/%s?atom=%s", atom, full)
 	req, _ := http.NewRequest("GET", url, nil)
 	req = req.WithContext(context)
-	ra, _ := HttpClient.Do(req)
+	ra, err := HttpClient.Do(req)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
 	defer ra.Body.Close()
 }
