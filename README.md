@@ -1,14 +1,59 @@
 # Reactor
 
-##
+Reactor is a microservice designed to test and experiment with observability of microservices. You can play with it
+on your machine in `local` more, but it gets interesting when you deploy it on a Kubernetes cluster or an Istio mesh.
 
-PORT=3330
-NAME=reactor
-VERSION=1
-MODE=local
-GOOGLE_APPLICATION_CREDENTIALS=/usr/local/etc/keys/my-project.json
-GOOGLE_PROJECT_ID=my-project
+In cluster mode you will have a bit over 120 microservices (atoms in the mendeleev table and a few more). You can change
+the behaviour of the cloud of microservices by giving `reactor` some interesting `molecules`.
 
+### Example
+
+`[H]*2[O]`
+
+
+## Installation
+
+### Pre-Requirement
+
+Create a directory `tmp` and `work` in this repo. Don't worry, they are in the `.gitignore` so you do not accidentally
+check them in.
+
+Create a service account for *your* project (eg `my-research`). That will be used local as well on cluster. Download
+the JSON private key and copy it to `work/my-research/service-account.json`. Read the documentation to see how to
+create the service account:  [https://cloud.google.com/iam/docs/creating-managing-service-account-keys].
+
+### Local
+
+Build the `reactor`
+
+`go build cmd/reactor/reactor.go`
+
+Set the environmental variables.
+
+```
+export PORT=3330
+export NAME=reactor-api
+export VERSION=1
+export MODE=local
+export GOOGLE_APPLICATION_CREDENTIALS=/Users/me/path/work/my-research/service-account.json
+export GOOGLE_PROJECT_ID=my-research
+```
+
+Execute.
+
+`./reactor`
+
+Test
+
+[http://localhost:3330/rr/split?molecule=[H]^2[O]]
+
+Go to the Cloud Console, select *Trace*.
+
+### Cluster
+
+*Not yet tested/supported*
+
+## Specification
 
 ### Molecule spec
 
