@@ -118,7 +118,7 @@ func CallOrbit(context context.Context, molecule string) {
 	if config.IsLocal() {
 		url = fmt.Sprintf("http://localhost:%s%s/orbit/%s?molecule=%s", config.Port, config.Base, next, molecule)
 	} else {
-		url = fmt.Sprintf("http://orbit-%s%s%s/orbit/%s?symbol=%s", next, config.Base, next, molecule)
+		url = fmt.Sprintf("http://orbit-%s%s%s/orbit/%s?molecule=%s", next, config.Base, next, molecule)
 	}
 	req, _ := http.NewRequest("GET", url, nil)
 	req = req.WithContext(context)

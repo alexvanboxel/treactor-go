@@ -34,7 +34,7 @@ func (l *RLogger) addSpan(ctx context.Context, entry *logging.Entry) *logging.En
 }
 
 func (l *RLogger) Info(ctx context.Context, format string, a ...interface{}) {
-	message := fmt.Sprintf(format, a)
+	message := fmt.Sprintf(format, a...)
 	entry := l.addSpan(ctx, &logging.Entry{
 		Severity: logging.Info,
 		Payload:  message,
@@ -53,7 +53,7 @@ func (l *RLogger) Error(ctx context.Context, r *http.Request, format string, a .
 }
 
 func (l *RLogger) Warning(ctx context.Context, format string, a ...interface{}) {
-	message := fmt.Sprintf(format, a)
+	message := fmt.Sprintf(format, a...)
 	entry := l.addSpan(ctx, &logging.Entry{
 		Severity: logging.Warning,
 		Payload:  message,

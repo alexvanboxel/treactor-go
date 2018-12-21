@@ -47,7 +47,9 @@ func ReactorAtom(w http.ResponseWriter, r *http.Request) {
 	//_, span := trace.StartSpan(r.Context(), "element.Get")
 	//defer span.End()
 
-	//url := r.URL
+	url := r.URL
+	symbol := url.Query().Get("symbol")
+	atom := client.Atoms.Symbols[symbol]
 	//plan, err := execute.Parse(url.Query().Get("atom"))
 	//if err != nil {
 	//	fmt.Println(err)
@@ -56,7 +58,7 @@ func ReactorAtom(w http.ResponseWriter, r *http.Request) {
 	//plan.Execute(r.Context())
 	//_ = plan
 
-	client.Logger.Info(r.Context(), "element log")
+	client.Logger.Info(r.Context(), "Atom %s (%s)", atom.Name, atom.Number)
 }
 
 func Serve() {

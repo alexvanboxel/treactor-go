@@ -67,9 +67,9 @@ func (e *rEntry) addSpan(ctx context.Context) {
 	}
 }
 
-func (e *rEntry) addPayLoad(request *http.Request, s string, a []interface{}) {
+func (e *rEntry) addPayLoad(request *http.Request, s string, a ...interface{}) {
 	e.payLoad = rPayLoad{
-		Message: s,
+		Message: fmt.Sprintf(s, a...),
 		ServiceContext: rServiceContext{
 			Service: "reactor",
 			Version: "1",
@@ -77,8 +77,7 @@ func (e *rEntry) addPayLoad(request *http.Request, s string, a []interface{}) {
 		Context: rContext{
 			HttpRequest: rHttpRequest{
 				Method: request.Method,
-				Url: request.URL.String(),
-
+				Url:    request.URL.String(),
 			},
 		},
 	}
