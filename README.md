@@ -71,3 +71,10 @@ O1     5[Ur,log:1,xyz:4]^5[C,log:1,xyz:4]
 A        Ur,log:1,xyz:4
 A                          C,log:1,xyz:4
 ```
+
+## Test Scenarios
+
+https://github.com/wg/wrk
+
+`wrk -t12 -c400 -d30s "http://<yourip>/rr/split?molecule=[H]^2[O]"`
+

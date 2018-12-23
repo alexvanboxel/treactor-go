@@ -27,6 +27,12 @@ spec:
             - mountPath: /var/run/secrets/quantum/google-service-account
               name: reactor-service-account
           env:
+            - name: PORT
+              value: '3330'
+            - name: APP_NAME
+              value: '{{.Module}}-{{.Component}}'
+            - name: APP_VERSION
+              value: '1'
             - name: POD_NAME
               valueFrom:
                 fieldRef:
@@ -42,14 +48,10 @@ spec:
                 fieldRef:
                   apiVersion: v1
                   fieldPath: metadata.uid
-            - name: PORT
-              value: '3330'
-            - name: RECTOR_NAME
-              value: '{{.Module}}-{{.Component}}'
-            - name: REACTOR_VERSION
-              value: '1'
             - name: REACTOR_MODE
               value: 'k8s'
+            - name: REACTOR_DEBUG
+              value: '0'
             - name: GOOGLE_PROJECT_ID
               value: '{{.Project}}'
             - name: GOOGLE_APPLICATION_CREDENTIALS

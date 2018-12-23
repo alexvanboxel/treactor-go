@@ -3,19 +3,24 @@ package config
 import "os"
 
 var (
-	Port     string
-	Version  string
-	Name     string
+	Port       string
+	AppVersion string
+	AppName    string
+
 	Mode     string
 	Base     string
 	MaxOrbit int
 )
 
 func Configure() {
+	// General Settings
 	Port = os.Getenv("PORT")
-	Version = os.Getenv("VERSION")
-	Name = os.Getenv("NAME")
-	Mode = os.Getenv("MODE")
+	AppName = os.Getenv("APP_NAME")
+	AppVersion = os.Getenv("APP_VERSION")
+	// Reactor Specific Settings
+	Mode = os.Getenv("REACTOR_MODE")
+	Mode = os.Getenv("REACTOR_DEBUG")
+	// Reactor Fixed Settings
 	Base = "/rr"
 	MaxOrbit = 5
 }

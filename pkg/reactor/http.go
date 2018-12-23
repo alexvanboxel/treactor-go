@@ -67,7 +67,7 @@ func ReactorHealthz(w http.ResponseWriter, r *http.Request) {
 func Serve() {
 	atoms := chem.NewAtoms()
 
-	fmt.Printf("Reactor (%s:%s) listening on port %s\n", config.Name, config.Version, config.Port)
+	fmt.Printf("Reactor (%s:%s) listening on port %s\n", config.AppName, config.AppVersion, config.Port)
 	fmt.Printf("Mode: %s\n", config.Mode)
 
 	r := http.NewServeMux()
