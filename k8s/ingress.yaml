@@ -5,15 +5,15 @@ apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: reactor-ingress
-  annotations:
-    kubernetes.io/ingress.class: "istio"
+#  annotations:
+#    kubernetes.io/ingress.class: "istio"
   namespace: reactor
 spec:
   rules:
   - http:
       paths:
-      - path: /reactor
+      - path: /rr/*
         backend:
-          serviceName: reactor
-          servicePort: 3330
+          serviceName: reactor-api
+          servicePort: http
 ---

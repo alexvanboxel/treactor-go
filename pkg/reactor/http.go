@@ -61,6 +61,9 @@ func ReactorAtom(w http.ResponseWriter, r *http.Request) {
 	client.Logger.Info(r.Context(), "Atom %s (%s)", atom.Name, atom.Number)
 }
 
+func ReactorHealthz(w http.ResponseWriter, r *http.Request) {
+}
+
 func Serve() {
 	atoms := chem.NewAtoms()
 
@@ -68,6 +71,8 @@ func Serve() {
 	fmt.Printf("Mode: %s\n", config.Mode)
 
 	r := http.NewServeMux()
+	r.HandleFunc("/", ReactorHealthz)
+	r.HandleFunc("/healthz", ReactorHealthz)
 	r.HandleFunc(fmt.Sprintf("%s/split", config.Base), ReactorSplit)
 	r.HandleFunc(fmt.Sprintf("%s/orbit", config.Base), ReactorOrbit)
 	r.HandleFunc(fmt.Sprintf("%s/orbit/1", config.Base), ReactorOrbit)

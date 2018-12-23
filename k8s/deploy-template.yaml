@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{.Module}}-{{.Component}}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{.Module}}-{{.Component}}
+      version: '1'
+  template:
+    metadata:
+      labels:
+        app: {{.Module}}-{{.Component}}
+        version: '1'
+    spec:
+      volumes:
+        - name: reactor-service-account
+          secret:
+            defaultMode: 420
+            secretName: reactor-service-account
+      containers:
+        - name: api
+          image: eu.gcr.io/{{.Project}}/reactor:latest
+          imagePullPolicy: Always
+          volumeMounts:
+            - mountPath: /var/run/secrets/quantum/google-service-account
+              name: reactor-service-account
+          env:
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.name
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.namespace
+            - name: POD_UID
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.uid
+            - name: PORT
+              value: '3330'
+            - name: RECTOR_NAME
+              value: '{{.Module}}-{{.Component}}'
+            - name: REACTOR_VERSION
+              value: '1'
+            - name: REACTOR_MODE
+              value: 'k8s'
+            - name: GOOGLE_PROJECT_ID
+              value: '{{.Project}}'
+            - name: GOOGLE_APPLICATION_CREDENTIALS
+              value: '/var/run/secrets/quantum/google-service-account/service-account.json'
+          ports:
+            - containerPort: 3330
+              name: http
+              protocol: TCP

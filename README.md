@@ -26,26 +26,26 @@ create the service account:  [https://cloud.google.com/iam/docs/creating-managin
 
 Build the `reactor`
 
-`go build cmd/reactor/reactor.go`
+`go install ./cmd/reactor/`
 
 Set the environmental variables.
 
 ```
 export PORT=3330
-export NAME=reactor-api
-export VERSION=1
-export MODE=local
+export REACTOR_NAME=reactor-api
+export REACTOR_VERSION=1
+export REACTOR_MODE=local
 export GOOGLE_APPLICATION_CREDENTIALS=/Users/me/path/work/my-research/service-account.json
 export GOOGLE_PROJECT_ID=my-research
 ```
 
 Execute.
 
-`./reactor`
+`reactor`
 
 Test
 
-[http://localhost:3330/rr/split?molecule=[H]^2[O]]
+http://localhost:3330/rr/split?molecule=[H]^2[O]
 
 Go to the Cloud Console, select *Trace*.
 

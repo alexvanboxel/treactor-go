@@ -118,7 +118,7 @@ func CallOrbit(context context.Context, molecule string) {
 	if config.IsLocal() {
 		url = fmt.Sprintf("http://localhost:%s%s/orbit/%s?molecule=%s", config.Port, config.Base, next, molecule)
 	} else {
-		url = fmt.Sprintf("http://orbit-%s%s%s/orbit/%s?molecule=%s", next, config.Base, next, molecule)
+		url = fmt.Sprintf("http://orbit-%s%s/orbit/%s?molecule=%s", next, config.Base, next, molecule)
 	}
 	req, _ := http.NewRequest("GET", url, nil)
 	req = req.WithContext(context)
@@ -137,7 +137,7 @@ func CallElement(context context.Context, symbol string) {
 	if config.IsLocal() {
 		url = fmt.Sprintf("http://localhost:%s%s/atom/%s?symbol=%s", config.Port, config.Base, symbol, full)
 	} else {
-		url = fmt.Sprintf("http://%s%s/atom/%s?symbol=%s", symbol, config.Base, symbol, full)
+		url = fmt.Sprintf("http://atom-%s%s/atom/%s?symbol=%s", strings.ToLower(symbol), config.Base, symbol, full)
 	}
 	req, _ := http.NewRequest("GET", url, nil)
 	req = req.WithContext(context)

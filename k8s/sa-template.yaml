@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: reactor-service-account
+type: Opaque
+data:
+  service-account.json: {{.ServiceAccount}}

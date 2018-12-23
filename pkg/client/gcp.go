@@ -6,6 +6,7 @@ import (
 	"cloud.google.com/go/pubsub"
 	"context"
 	"contrib.go.opencensus.io/exporter/stackdriver"
+	"github.com/alexvanboxel/reactor/pkg/config"
 	"github.com/alexvanboxel/reactor/pkg/rlog"
 	"go.opencensus.io/exporter/prometheus"
 	"go.opencensus.io/stats/view"
@@ -115,7 +116,11 @@ func initCencus(wg *sync.WaitGroup, projectId string) {
 	}
 
 	trace.RegisterExporter(sd)
-	trace.ApplyConfig(trace.Config{DefaultSampler: trace.AlwaysSample()})
+	if config.IsLocal() {
+		trace.ApplyConfig(trace.Config{DefaultSampler: trace.AlwaysSample()})
+	} else {
+		trace.ApplyConfig(trace.Config{DefaultSampler: trace.ProbabilitySampler(1e-2)})
+	}
 
 	exporter, err := prometheus.NewExporter(prometheus.Options{})
 	if err != nil {

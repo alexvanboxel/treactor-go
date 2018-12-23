@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: {{.Module}}-{{.Component}}
+  name: {{.Module}}-{{.Component}}
+spec:
+  ports:
+    - name: http
+      port: 80
+      protocol: TCP
+      targetPort: http
+    - name: grpc
+      port: 82
+      protocol: TCP
+      targetPort: grpc
+  selector:
+    app: {{.Module}}-{{.Component}}
+  sessionAffinity: None
+#  type: ClusterIP
+  type: NodePort
