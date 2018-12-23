@@ -1,4 +1,4 @@
-package client
+package resource
 
 import (
 	"go.opencensus.io/exporter/stackdriver/propagation"
@@ -8,7 +8,7 @@ import (
 
 var HttpClient *http.Client
 
-func ClientInit() {
+func clientInit() {
 	octr := &ochttp.Transport{
 		Propagation: &propagation.HTTPFormat{},
 	}

@@ -1,11 +1,13 @@
-package client
+package resource
 
 import (
+	"cloud.google.com/go/compute/metadata"
 	"cloud.google.com/go/logging"
 	"cloud.google.com/go/profiler"
 	"cloud.google.com/go/pubsub"
 	"context"
 	"contrib.go.opencensus.io/exporter/stackdriver"
+	"fmt"
 	"github.com/alexvanboxel/reactor/pkg/config"
 	"github.com/alexvanboxel/reactor/pkg/rlog"
 	"go.opencensus.io/exporter/prometheus"
@@ -66,33 +68,38 @@ func initLoggingClient(wg *sync.WaitGroup, projectId string) () {
 		log.Fatalf("Failed to create pubsub client: %v", err)
 	}
 	Logger = rlog.NewRLogger(projectId, LoggingClient.Logger("reactor"), MonitoredResource)
+	fmt.Printf("* Google Cloud:  Logging initialized.\n")
 }
 
 func initMonitoredResource(projectId string) {
-	MonitoredResource = &mrpb.MonitoredResource{
-		Type:   "global",
-		Labels: make(map[string]string),
+	if config.IsLocalMode() {
+		// see: https://cloud.google.com/monitoring/api/resources#tag_global
+		MonitoredResource = &mrpb.MonitoredResource{
+			Type:   "global",
+			Labels: make(map[string]string),
+		}
+		MonitoredResource.Labels["project_id"] = projectId
+	} else if config.IsKubernetesMode() {
+		// see: https://cloud.google.com/monitoring/api/resources#tag_k8s_container
+		MonitoredResource = &mrpb.MonitoredResource{
+			Type:   "k8s_container",
+			Labels: make(map[string]string),
+		}
+		MonitoredResource.Labels["namespace_name"] = os.Getenv("POD_NAMESPACE")
+		MonitoredResource.Labels["pod_name"] = os.Getenv("POD_NAME")
+		MonitoredResource.Labels["container_name"] = config.AppName
+		MonitoredResource.Labels["project_id"] = projectId
+		clusterName, err := metadata.InstanceAttributeValue("cluster-name")
+		if err != nil {
+			log.Fatalf("Failed to get cluster_name from meta data server: %v", err)
+		}
+		MonitoredResource.Labels["cluster_name"] = clusterName
+		clusterLocation, err := metadata.InstanceAttributeValue("cluster-location")
+		if err != nil {
+			log.Fatalf("Failed to get cluster_location from meta data server: %v", err)
+		}
+		MonitoredResource.Labels["location"] = clusterLocation
 	}
-	MonitoredResource.Labels["project_id"] = projectId
-
-	//MonitoredResource = &mrpb.MonitoredResource{
-	//	Type:   "k8s_container",
-	//	Labels: make(map[string]string),
-	//}
-	//MonitoredResource.Labels["project_id"] = projectId
-	//MonitoredResource.Labels["namespace_name"] = os.Getenv("POD_NAMESPACE")
-	//MonitoredResource.Labels["pod_name"] = os.Getenv("POD_NAME")
-	//clusterName, err := metadata.InstanceAttributeValue("cluster-name")
-	//if err != nil {
-	//	log.Fatalf("Failed to get cluster_name from meta data server: %v", err)
-	//}
-	//MonitoredResource.Labels["cluster_name"] = clusterName
-	//clusterLocation, err := metadata.InstanceAttributeValue("cluster-location")
-	//if err != nil {
-	//	log.Fatalf("Failed to get cluster_location from meta data server: %v", err)
-	//}
-	//MonitoredResource.Labels["location"] = clusterLocation
-	//MonitoredResource.Labels["container_name"] = "proton-gdpr-api"
 }
 
 // Get a single pubsub client and attach it to the background context
@@ -104,9 +111,10 @@ func initPubSubCient(wg *sync.WaitGroup, projectId string) () {
 	if err != nil {
 		log.Fatalf("Failed to create pubsub client: %v", err)
 	}
+	fmt.Printf("* Google Cloud: PubSub initialized.\n")
 }
 
-func initCencus(wg *sync.WaitGroup, projectId string) {
+func initCencus(wg *sync.WaitGroup) {
 	defer wg.Done()
 	sd, err := stackdriver.NewExporter(stackdriver.Options{
 		//ProjectID: projectId,
@@ -116,10 +124,12 @@ func initCencus(wg *sync.WaitGroup, projectId string) {
 	}
 
 	trace.RegisterExporter(sd)
-	if config.IsLocal() {
+	if config.IsDebug() {
 		trace.ApplyConfig(trace.Config{DefaultSampler: trace.AlwaysSample()})
+		fmt.Printf("* OpenCensus: Trace running in debug, all requests will be traced.\n")
 	} else {
 		trace.ApplyConfig(trace.Config{DefaultSampler: trace.ProbabilitySampler(1e-2)})
+		fmt.Printf("* OpenCensus: Trace probability sampling is active.\n")
 	}
 
 	exporter, err := prometheus.NewExporter(prometheus.Options{})
@@ -132,6 +142,7 @@ func initCencus(wg *sync.WaitGroup, projectId string) {
 		mux := http.NewServeMux()
 		mux.Handle("/metrics", exporter)
 		zpages.Handle(mux, "/debug")
+		fmt.Printf("* OpenCensus zPages: Running on 127.0.0.1:4999.\n")
 		log.Fatal(http.ListenAndServe("127.0.0.1:4999", mux))
 	}()
 
@@ -139,19 +150,24 @@ func initCencus(wg *sync.WaitGroup, projectId string) {
 
 func initProfiler(wg *sync.WaitGroup) {
 	defer wg.Done()
-	if err := profiler.Start(profiler.Config{Service: "gdpr-api", ServiceVersion: "0"}); err != nil {
-		log.Fatal(err)
+	if config.IsProfiling() {
+		fmt.Printf("* StackDriver: Profiler active.\n")
+		if err := profiler.Start(profiler.Config{Service: config.AppName, ServiceVersion: config.AppVersion}); err != nil {
+			log.Fatal(err)
+		}
 	}
 }
 
 func GoogleCloudInit() {
+	fmt.Printf("Start initializing reactor.\n")
 	projectID := os.Getenv("GOOGLE_PROJECT_ID")
 	initMonitoredResource(projectID)
 	wg := sync.WaitGroup{}
-	wg.Add(3)
-	//initProfiler(&wg)
-	initLoggingClient(&wg, projectID)
-	initPubSubCient(&wg, projectID)
-	initCencus(&wg, projectID)
+	wg.Add(4)
+	go initProfiler(&wg)
+	go initLoggingClient(&wg, projectID)
+	go initPubSubCient(&wg, projectID)
+	go initCencus(&wg)
 	wg.Wait()
+	fmt.Printf("Finished initializing reactor.\n")
 }

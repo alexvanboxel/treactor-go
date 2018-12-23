@@ -2,7 +2,7 @@ package reactor
 
 import (
 	"encoding/json"
-	"github.com/alexvanboxel/reactor/pkg/client"
+	"github.com/alexvanboxel/reactor/pkg/resource"
 	"io/ioutil"
 	"net/http"
 )
@@ -29,7 +29,7 @@ func CallService(service string, trace map[string]string) *Service {
 	for k, v := range trace {
 		req.Header.Set(k, v)
 	}
-	ra, err := client.HttpClient.Do(req)
+	ra, err := resource.HttpClient.Do(req)
 	//ra, err := http.Get("http://a:3331/a")
 	if err != nil {
 		return &Service{

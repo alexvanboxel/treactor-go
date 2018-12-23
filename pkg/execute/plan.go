@@ -2,7 +2,7 @@ package execute
 
 import (
 	"fmt"
-	"github.com/alexvanboxel/reactor/pkg/client"
+	"github.com/alexvanboxel/reactor/pkg/resource"
 	"github.com/alexvanboxel/reactor/pkg/config"
 	"go.opencensus.io/trace"
 	"golang.org/x/net/context"
@@ -115,14 +115,14 @@ func (o *Operator) String() string {
 func CallOrbit(context context.Context, molecule string) {
 	next := config.NextOrbit()
 	var url string
-	if config.IsLocal() {
+	if config.IsLocalMode() {
 		url = fmt.Sprintf("http://localhost:%s%s/orbit/%s?molecule=%s", config.Port, config.Base, next, molecule)
 	} else {
 		url = fmt.Sprintf("http://orbit-%s%s/orbit/%s?molecule=%s", next, config.Base, next, molecule)
 	}
 	req, _ := http.NewRequest("GET", url, nil)
 	req = req.WithContext(context)
-	ra, err := client.HttpClient.Do(req)
+	ra, err := resource.HttpClient.Do(req)
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -134,14 +134,14 @@ func CallElement(context context.Context, symbol string) {
 	full := symbol
 	symbol = strings.Split(full, ",")[0]
 	var url string
-	if config.IsLocal() {
+	if config.IsLocalMode() {
 		url = fmt.Sprintf("http://localhost:%s%s/atom/%s?symbol=%s", config.Port, config.Base, symbol, full)
 	} else {
 		url = fmt.Sprintf("http://atom-%s%s/atom/%s?symbol=%s", strings.ToLower(symbol), config.Base, symbol, full)
 	}
 	req, _ := http.NewRequest("GET", url, nil)
 	req = req.WithContext(context)
-	ra, err := client.HttpClient.Do(req)
+	ra, err := resource.HttpClient.Do(req)
 	if err != nil {
 		fmt.Println(err)
 		return

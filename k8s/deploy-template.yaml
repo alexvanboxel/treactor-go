@@ -20,7 +20,7 @@ spec:
             defaultMode: 420
             secretName: reactor-service-account
       containers:
-        - name: api
+        - name: {{.Module}}-{{.Component}}
           image: eu.gcr.io/{{.Project}}/reactor:latest
           imagePullPolicy: Always
           volumeMounts:
@@ -52,6 +52,8 @@ spec:
               value: 'k8s'
             - name: REACTOR_DEBUG
               value: '0'
+            - name: REACTOR_PROFILE
+              value: '1'
             - name: GOOGLE_PROJECT_ID
               value: '{{.Project}}'
             - name: GOOGLE_APPLICATION_CREDENTIALS

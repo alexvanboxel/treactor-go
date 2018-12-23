@@ -16,7 +16,7 @@ type RLogger struct {
 	projectId         string
 }
 
-func NewRLogger(projectId string, logger *logging.Logger, monitoredResource *mrpb.MonitoredResource) (*RLogger) {
+func NewRLogger(projectId string, logger *logging.Logger, monitoredResource *mrpb.MonitoredResource) *RLogger {
 	return &RLogger{
 		logger:            logger,
 		monitoredResource: monitoredResource,

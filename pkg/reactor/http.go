@@ -4,7 +4,7 @@ import (
 	"contrib.go.opencensus.io/exporter/stackdriver/propagation"
 	"fmt"
 	"github.com/alexvanboxel/reactor/pkg/chem"
-	"github.com/alexvanboxel/reactor/pkg/client"
+	"github.com/alexvanboxel/reactor/pkg/resource"
 	"github.com/alexvanboxel/reactor/pkg/config"
 	"github.com/alexvanboxel/reactor/pkg/execute"
 	"go.opencensus.io/plugin/ochttp"
@@ -29,7 +29,7 @@ func ReactorSplit(w http.ResponseWriter, r *http.Request) {
 	}
 	plan.Execute(ctx)
 
-	client.Logger.Warning(ctx, "Test log")
+	resource.Logger.Warning(ctx, "Test log")
 }
 
 func ReactorOrbit(w http.ResponseWriter, r *http.Request) {
@@ -40,7 +40,7 @@ func ReactorOrbit(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	plan.Execute(r.Context())
-	client.Logger.Error(r.Context(), r, "Full error?")
+	resource.Logger.Error(r.Context(), r, "Full error?")
 }
 
 func ReactorAtom(w http.ResponseWriter, r *http.Request) {
@@ -49,7 +49,7 @@ func ReactorAtom(w http.ResponseWriter, r *http.Request) {
 
 	url := r.URL
 	symbol := url.Query().Get("symbol")
-	atom := client.Atoms.Symbols[symbol]
+	atom := resource.Atoms.Symbols[symbol]
 	//plan, err := execute.Parse(url.Query().Get("atom"))
 	//if err != nil {
 	//	fmt.Println(err)
@@ -58,7 +58,7 @@ func ReactorAtom(w http.ResponseWriter, r *http.Request) {
 	//plan.Execute(r.Context())
 	//_ = plan
 
-	client.Logger.Info(r.Context(), "Atom %s (%s)", atom.Name, atom.Number)
+	resource.Logger.Info(r.Context(), "Atom %s (%s)", atom.Name, atom.Number)
 }
 
 func ReactorHealthz(w http.ResponseWriter, r *http.Request) {

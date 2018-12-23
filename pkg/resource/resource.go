@@ -1,4 +1,4 @@
-package client
+package resource
 
 import (
 	"github.com/alexvanboxel/reactor/pkg/chem"
@@ -8,7 +8,7 @@ var Atoms *chem.Atoms
 
 func Init() {
 	GoogleCloudInit()
-	ClientInit()
+	clientInit()
 
 	Atoms = chem.NewAtoms()
 }
