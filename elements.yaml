@@ -803,7 +803,7 @@ elements:
   symbol: "Ce"
   element: "Cerium"
   origin: "the then recently discovered asteroid Ceres, considered a planet at the time"
-  group: "-"
+#  group: "-"
   period: 6
   weight: 140.116(1)<sup id="cite_ref-fn2_9-26" class="reference"><a href="#cite_note-fn2-9">[III]</sup>
   density: 6.77
@@ -817,7 +817,7 @@ elements:
   symbol: "Pr"
   element: "Praseodymium"
   origin: "the Greek <i>praseios didymos</i> meaning 'green twin'"
-  group: "-"
+#  group: "-"
   period: 6
   weight: 140.90766(2)
   density: 6.773
@@ -831,7 +831,7 @@ elements:
   symbol: "Nd"
   element: "Neodymium"
   origin: "the Greek <i>neos didymos</i> meaning 'new twin'"
-  group: "-"
+#  group: "-"
   period: 6
   weight: 144.242(3)<sup id="cite_ref-fn2_9-27" class="reference"><a href="#cite_note-fn2-9">[III]</sup>
   density: 7.007
@@ -845,7 +845,7 @@ elements:
   symbol: "Pm"
   element: "Promethium"
   origin: "Prometheus of Greek mythology who stole fire from the Gods and gave it to humans"
-  group: "-"
+#  group: "-"
   period: 6
   weight: "[145]"
   density: 7.26
@@ -859,7 +859,7 @@ elements:
   symbol: "Sm"
   element: "Samarium"
   origin: "Samarskite, the name of the mineral from which it was first isolated"
-  group: "-"
+#  group: "-"
   period: 6
   weight: 150.36(2)<sup id="cite_ref-fn2_9-28" class="reference"><a href="#cite_note-fn2-9">[III]</sup>
   density: 7.52
@@ -873,7 +873,7 @@ elements:
   symbol: "Eu"
   element: "Europium"
   origin: "Europe"
-  group: "-"
+#  group: "-"
   period: 6
   weight: 151.964(1)<sup id="cite_ref-fn2_9-29" class="reference"><a href="#cite_note-fn2-9">[III]</sup>
   density: 5.243
@@ -887,7 +887,7 @@ elements:
   symbol: "Gd"
   element: "Gadolinium"
   origin: "Johan Gadolin, chemist, physicist and mineralogist"
-  group: "-"
+#  group: "-"
   period: 6
   weight: 157.25(3)<sup id="cite_ref-fn2_9-30" class="reference"><a href="#cite_note-fn2-9">[III]</sup>
   density: 7.895
@@ -901,7 +901,7 @@ elements:
   symbol: "Tb"
   element: "Terbium"
   origin: "Ytterby, Sweden"
-  group: "-"
+#  group: "-"
   period: 6
   weight: 158.92535(2)
   density: 8.229
@@ -915,7 +915,7 @@ elements:
   symbol: "Dy"
   element: "Dysprosium"
   origin: "the Greek <i>dysprositos</i>, 'hard to get'"
-  group: "-"
+#  group: "-"
   period: 6
   weight: 162.500(1)<sup id="cite_ref-fn2_9-31" class="reference"><a href="#cite_note-fn2-9">[III]</sup>
   density: 8.55
@@ -929,7 +929,7 @@ elements:
   symbol: "Ho"
   element: "Holmium"
   origin: "<i>Holmia</i>, the New Latin name for Stockholm"
-  group: "-"
+#  group: "-"
   period: 6
   weight: 164.93033(2)
   density: 8.795
@@ -943,7 +943,7 @@ elements:
   symbol: "Er"
   element: "Erbium"
   origin: "Ytterby, Sweden"
-  group: "-"
+#  group: "-"
   period: 6
   weight: 167.259(3)<sup id="cite_ref-fn2_9-32" class="reference"><a href="#cite_note-fn2-9">[III]</sup>
   density: 9.066
@@ -957,7 +957,7 @@ elements:
   symbol: "Tm"
   element: "Thulium"
   origin: "Thule, the ancient name for Scandinavia"
-  group: "-"
+#  group: "-"
   period: 6
   weight: 168.93422(2)
   density: 9.321
@@ -971,7 +971,7 @@ elements:
   symbol: "Yb"
   element: "Ytterbium"
   origin: "Ytterby, Sweden"
-  group: "-"
+#  group: "-"
   period: 6
   weight: 173.045(10)<sup id="cite_ref-fn2_9-33" class="reference"><a href="#cite_note-fn2-9">[III]</sup>
   density: 6.965
@@ -985,7 +985,7 @@ elements:
   symbol: "Lu"
   element: "Lutetium"
   origin: "<i>Lutetia</i>, the Latin name for Paris"
-  group: "-"
+#  group: "-"
   period: 6
   weight: 174.9668(1)<sup id="cite_ref-fn2_9-34" class="reference"><a href="#cite_note-fn2-9">[III]</sup>
   density: 9.84
@@ -1253,7 +1253,7 @@ elements:
   symbol: "Th"
   element: "Thorium"
   origin: "Thor, the Scandinavian god of thunder"
-  group: "-"
+#  group: "-"
   period: 7
   weight: 232.0377(4)<sup id="cite_ref-fn1_16-9" class="reference"><a href="#cite_note-fn1-16">[X]</sup><sup id="cite_ref-fn2_9-37" class="reference"><a href="#cite_note-fn2-9">[III]</sup>
   density: 11.72
@@ -1267,7 +1267,7 @@ elements:
   symbol: "Pa"
   element: "Protactinium"
   origin: "the Greek <i>protos</i>, 'first', and actinium, which is produced through the radioactive decay of protactinium"
-  group: "-"
+#  group: "-"
   period: 7
   weight: 231.03588(2)<sup id="cite_ref-fn1_16-10" class="reference"><a href="#cite_note-fn1-16">[X]</sup>
   density: 15.37
@@ -1281,7 +1281,7 @@ elements:
   symbol: "U"
   element: "Uranium"
   origin: "Uranus, the seventh planet in the Solar System"
-  group: "-"
+#  group: "-"
   period: 7
   weight: 238.02891(3)<sup id="cite_ref-fn1_16-11" class="reference"><a href="#cite_note-fn1-16">[X]</sup>
   density: 18.95
@@ -1295,7 +1295,7 @@ elements:
   symbol: "Np"
   element: "Neptunium"
   origin: "Neptune, the eighth planet in the Solar System"
-  group: "-"
+#  group: "-"
   period: 7
   weight: "[237]"
   density: 20.45
@@ -1309,7 +1309,7 @@ elements:
   symbol: "Pu"
   element: "Plutonium"
   origin: "Pluto, a dwarf planet in the Solar System (then considered the ninth planet)"
-  group: "-"
+#  group: "-"
   period: 7
   weight: "[244]"
   density: 19.84
@@ -1323,7 +1323,7 @@ elements:
   symbol: "Am"
   element: "Americium"
   origin: "The Americas, as the element was first synthesized on the continent, by analogy with europium"
-  group: "-"
+#  group: "-"
   period: 7
   weight: "[243]"
   density: 13.69
@@ -1337,7 +1337,7 @@ elements:
   symbol: "Cm"
   element: "Curium"
   origin: "Pierre Curie, a physicist, and Marie Curie, a physicist and chemist, named after great scientists by analogy with gadolinium"
-  group: "-"
+#  group: "-"
   period: 7
   weight: "[247]"
   density: 13.51
@@ -1351,7 +1351,7 @@ elements:
   symbol: "Bk"
   element: "Berkelium"
   origin: "Berkeley, California, where the element was first synthesized, by analogy with terbium"
-  group: "-"
+#  group: "-"
   period: 7
   weight: "[247]"
   density: 14.79
@@ -1365,7 +1365,7 @@ elements:
   symbol: "Cf"
   element: "Californium"
   origin: "California, where the element was first synthesized"
-  group: "-"
+#  group: "-"
   period: 7
   weight: "[251]"
   density: 15.1
@@ -1379,7 +1379,7 @@ elements:
   symbol: "Es"
   element: "Einsteinium"
   origin: "Albert Einstein, physicist"
-  group: "-"
+#  group: "-"
   period: 7
   weight: "[252]"
   density: 8.84
@@ -1393,7 +1393,7 @@ elements:
   symbol: "Fm"
   element: "Fermium"
   origin: "Enrico Fermi, physicist"
-  group: "-"
+#  group: "-"
   period: 7
   weight: "[257]"
   density: (9.7)
@@ -1407,7 +1407,7 @@ elements:
   symbol: "Md"
   element: "Mendelevium"
   origin: "Dmitri Mendeleev, chemist and inventor"
-  group: "-"
+#  group: "-"
   period: 7
   weight: "[258]"
   density: (10.3)
@@ -1421,7 +1421,7 @@ elements:
   symbol: "No"
   element: "Nobelium"
   origin: "Alfred Nobel, chemist, engineer, innovator, and armaments manufacturer"
-  group: "-"
+#  group: "-"
   period: 7
   weight: "[259]"
   density: (9.9)
@@ -1435,7 +1435,7 @@ elements:
   symbol: "Lr"
   element: "Lawrencium"
   origin: "Ernest O. Lawrence, physicist"
-  group: "-"
+#  group: "-"
   period: 7
   weight: "[266]"
   density: (15.6)

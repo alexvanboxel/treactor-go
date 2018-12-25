@@ -72,33 +72,41 @@ func initLoggingClient(wg *sync.WaitGroup, projectId string) () {
 }
 
 func initMonitoredResource(projectId string) {
-	if config.IsLocalMode() {
+	if config.IsKubernetesMode() {
+		if metadata.OnGCE() {
+			// see: https://cloud.google.com/monitoring/api/resources#tag_k8s_container
+			MonitoredResource = &mrpb.MonitoredResource{
+				Type:   "k8s_container",
+				Labels: make(map[string]string),
+			}
+			MonitoredResource.Labels["namespace_name"] = os.Getenv("POD_NAMESPACE")
+			MonitoredResource.Labels["pod_name"] = os.Getenv("POD_NAME")
+			MonitoredResource.Labels["container_name"] = config.AppName
+			MonitoredResource.Labels["project_id"] = projectId
+			clusterName, err := metadata.InstanceAttributeValue("cluster-name")
+			if err != nil {
+				log.Fatalf("Failed to get cluster_name from meta data server: %v", err)
+			}
+			MonitoredResource.Labels["cluster_name"] = clusterName
+			clusterLocation, err := metadata.InstanceAttributeValue("cluster-location")
+			if err != nil {
+				log.Fatalf("Failed to get cluster_location from meta data server: %v", err)
+			}
+			MonitoredResource.Labels["location"] = clusterLocation
+			fmt.Printf("* Google Cloud: MonitoredResource set to k8s_container.\n")
+		} else {
+			fmt.Printf("! Google Cloud: Meta Server not accessible, couldn't configure MonitoredResource.\n")
+		}
+	}
+
+	if MonitoredResource == nil {
 		// see: https://cloud.google.com/monitoring/api/resources#tag_global
 		MonitoredResource = &mrpb.MonitoredResource{
 			Type:   "global",
 			Labels: make(map[string]string),
 		}
 		MonitoredResource.Labels["project_id"] = projectId
-	} else if config.IsKubernetesMode() {
-		// see: https://cloud.google.com/monitoring/api/resources#tag_k8s_container
-		MonitoredResource = &mrpb.MonitoredResource{
-			Type:   "k8s_container",
-			Labels: make(map[string]string),
-		}
-		MonitoredResource.Labels["namespace_name"] = os.Getenv("POD_NAMESPACE")
-		MonitoredResource.Labels["pod_name"] = os.Getenv("POD_NAME")
-		MonitoredResource.Labels["container_name"] = config.AppName
-		MonitoredResource.Labels["project_id"] = projectId
-		clusterName, err := metadata.InstanceAttributeValue("cluster-name")
-		if err != nil {
-			log.Fatalf("Failed to get cluster_name from meta data server: %v", err)
-		}
-		MonitoredResource.Labels["cluster_name"] = clusterName
-		clusterLocation, err := metadata.InstanceAttributeValue("cluster-location")
-		if err != nil {
-			log.Fatalf("Failed to get cluster_location from meta data server: %v", err)
-		}
-		MonitoredResource.Labels["location"] = clusterLocation
+		fmt.Printf("* Google Cloud: MonitoredResource set to global.\n")
 	}
 }
 

@@ -7,11 +7,11 @@ import (
 )
 
 type element struct {
-	Number    string `yaml:"number"`
+	Number    int    `yaml:"number"`
 	Symbol    string `yaml:"symbol"`
 	Element   string `yaml:"element"`
-	Group     string `yaml:"group"`
-	Period    string `yaml:"period"`
+	Group     int    `yaml:"group"`
+	Period    int    `yaml:"period"`
 	Weight    string `yaml:"weight"`
 	Density   string `yaml:"density"`
 	Melt      string `yaml:"melt"`
@@ -45,7 +45,9 @@ func readElements() elements {
 type Atom struct {
 	Name   string
 	Symbol string
-	Number string
+	Number int
+	Period int
+	Group  int
 }
 
 type Atoms struct {
@@ -59,8 +61,10 @@ func (a *Atoms) read() {
 	for _, e := range elements.Elements {
 		atom := Atom{
 			Symbol: e.Symbol,
-			Number: e.Number,
 			Name:   e.Element,
+			Number: e.Number,
+			Period: e.Period,
+			Group:  e.Group,
 		}
 		a.Symbols[e.Symbol] = atom
 	}

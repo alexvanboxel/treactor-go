@@ -71,13 +71,12 @@ func sa() {
 	tmpl, err := template.New("sa").Parse(string(content))
 	check(err)
 
-
 	sa, err := ioutil.ReadFile("work/" + Project + "/service-account.json")
 	check(err)
 	sab64 := base64.StdEncoding.EncodeToString(sa)
 
 	type Info struct {
-		ServiceAccount    string
+		ServiceAccount string
 	}
 
 	f, err := os.Create(fmt.Sprintf("%s/reactor-service-account.yaml", deployDir))
@@ -86,7 +85,7 @@ func sa() {
 	defer f.Close()
 
 	deploy := Info{
-		ServiceAccount:   sab64,
+		ServiceAccount: sab64,
 	}
 	err = tmpl.Execute(f, deploy)
 	check(err)
@@ -110,14 +109,16 @@ func deploy(atoms *chem.Atoms) {
 	serviceTemplate, err := template.New("service").Parse(string(content))
 	check(err)
 
-	for k := range atoms.Symbols {
-		deploy := Info{
-			Module:    "atom",
-			Component: strings.ToLower(k),
-			Project:   Project,
+	for k, v := range atoms.Symbols {
+		if v.Period > 0 && v.Period <= 2 {
+			deploy := Info{
+				Module:    "atom",
+				Component: strings.ToLower(k),
+				Project:   Project,
+			}
+			writeDeploy(deployDir, tmpl, deploy)
+			writeService(serviceDir, serviceTemplate, deploy)
 		}
-		writeDeploy(deployDir, tmpl, deploy)
-		writeService(serviceDir, serviceTemplate, deploy)
 	}
 
 	deploy := Info{
