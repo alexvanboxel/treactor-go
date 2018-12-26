@@ -2,7 +2,6 @@ package reactor
 
 import (
 	"context"
-	"contrib.go.opencensus.io/exporter/stackdriver/propagation"
 	"encoding/json"
 	"fmt"
 	"github.com/alexvanboxel/reactor/pkg/chem"
@@ -107,7 +106,6 @@ func Serve() {
 
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", config.Port), &ochttp.Handler{
 		Handler:     r,
-		Propagation: &propagation.HTTPFormat{},
+		Propagation: config.TracePropagation(),
 	}))
-
 }

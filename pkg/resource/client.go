@@ -1,7 +1,7 @@
 package resource
 
 import (
-	"go.opencensus.io/exporter/stackdriver/propagation"
+	"github.com/alexvanboxel/reactor/pkg/config"
 	"go.opencensus.io/plugin/ochttp"
 	"net/http"
 )
@@ -10,7 +10,7 @@ var HttpClient *http.Client
 
 func clientInit() {
 	octr := &ochttp.Transport{
-		Propagation: &propagation.HTTPFormat{},
+		Propagation: config.TracePropagation(),
 	}
 	HttpClient = &http.Client{Transport: octr}
 }

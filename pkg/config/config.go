@@ -1,17 +1,24 @@
 package config
 
-import "os"
+import (
+	stackdriver "go.opencensus.io/exporter/stackdriver/propagation"
+	"go.opencensus.io/plugin/ochttp/propagation/b3"
+	oc "go.opencensus.io/trace/propagation"
+	"os"
+)
 
 var (
 	Port       string
 	AppVersion string
 	AppName    string
 
-	Mode     string
-	debug    string
-	profile  string
-	Base     string
-	MaxOrbit int
+	Mode             string
+	debug            string
+	profile          string
+	Base             string
+	MaxOrbit         int
+	tracePropagation string
+	traceInternal    string
 )
 
 func Configure() {
@@ -26,6 +33,10 @@ func Configure() {
 	// Reactor Fixed Settings
 	Base = "/rr"
 	MaxOrbit = 5
+
+	tracePropagation = os.Getenv("REACTOR_TRACE_PROPAGATION")
+	traceInternal = os.Getenv("REACTOR_TRACE_INTERNAL")
+
 }
 
 func IsLocalMode() bool {
@@ -46,4 +57,12 @@ func IsProfiling() bool {
 
 func NextOrbit() string {
 	return "inf"
+}
+
+func TracePropagation() oc.HTTPFormat {
+	if tracePropagation == "b3" {
+		return &b3.HTTPFormat{}
+	} else {
+		return &stackdriver.HTTPFormat{}
+	}
 }
