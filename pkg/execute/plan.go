@@ -1,6 +1,7 @@
 package execute
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/alexvanboxel/reactor/pkg/resource"
 	"github.com/alexvanboxel/reactor/pkg/config"
@@ -13,9 +14,16 @@ import (
 	"unicode"
 )
 
+type Capture struct {
+	Name     string
+	Headers  map[string][]string
+	Children []Capture
+}
+
 type Plan interface {
 	String() string
-	Execute(ctx context.Context)
+	Execute(ctx context.Context, channel chan Capture)
+	Calls() int
 }
 
 type Block struct {
@@ -29,21 +37,21 @@ func (o *Block) isAtom() bool {
 	return unicode.IsLetter(rune(o.block[0]))
 }
 
-func (o *Block) callElement(ctx context.Context, wg *sync.WaitGroup) {
+func (o *Block) callElement(ctx context.Context, wg *sync.WaitGroup, channel chan Capture) {
 	defer wg.Done()
 	ctx, span := trace.StartSpan(ctx, "Reactor.Block.callElement")
 	defer span.End()
-	CallElement(ctx, o.block)
+	CallElement(ctx, channel, o.block)
 }
 
-func (o *Block) callOrbit(ctx context.Context, wg *sync.WaitGroup) {
+func (o *Block) callOrbit(ctx context.Context, wg *sync.WaitGroup, channel chan Capture) {
 	defer wg.Done()
 	ctx, span := trace.StartSpan(ctx, "Reactor.Block.callOrbit")
 	defer span.End()
-	CallOrbit(ctx, o.block)
+	CallOrbit(ctx, channel, o.block)
 }
 
-func (o *Block) Execute(ctx context.Context) {
+func (o *Block) Execute(ctx context.Context, channel chan Capture) {
 	ctx, span := trace.StartSpan(ctx, "Reactor.Block")
 	defer span.End()
 	wg := sync.WaitGroup{}
@@ -51,23 +59,27 @@ func (o *Block) Execute(ctx context.Context) {
 	if o.mode == "s" {
 		for i := 1; i <= o.times; i++ {
 			if o.isAtom() {
-				o.callElement(ctx, &wg)
+				o.callElement(ctx, &wg, channel)
 			} else {
-				o.callOrbit(ctx, &wg)
+				o.callOrbit(ctx, &wg, channel)
 			}
 		}
 	} else if o.mode == "p" {
 		for i := 1; i <= o.times; i++ {
 			if o.isAtom() {
-				go o.callElement(ctx, &wg)
+				go o.callElement(ctx, &wg, channel)
 			} else {
-				go o.callOrbit(ctx, &wg)
+				go o.callOrbit(ctx, &wg, channel)
 			}
 		}
 	} else {
 		// TODO ERR
 	}
 	wg.Wait()
+}
+
+func (o *Block) Calls() int  {
+	return o.times
 }
 
 func (o *Block) String() string {
@@ -84,35 +96,39 @@ type Operator struct {
 	operand Token
 }
 
-func (o *Operator) Execute(ctx context.Context) {
+func (o *Operator) Execute(ctx context.Context, channel chan Capture) {
 	ctx, span := trace.StartSpan(ctx, "Reactor.Operator")
 	defer span.End()
 	wg := sync.WaitGroup{}
 	wg.Add(2)
 	if o.operand == PLUS {
-		o.execute(ctx, &wg, o.left)
-		o.execute(ctx, &wg, o.right)
+		o.execute(ctx, &wg, channel, o.left)
+		o.execute(ctx, &wg, channel, o.right)
 	} else if o.operand == MULTIPLY {
-		go o.execute(ctx, &wg, o.left)
-		go o.execute(ctx, &wg, o.right)
+		go o.execute(ctx, &wg, channel, o.left)
+		go o.execute(ctx, &wg, channel, o.right)
 	} else {
 		// TODO ERR
 	}
 	wg.Wait()
 }
 
-func (o *Operator) execute(ctx context.Context, wg *sync.WaitGroup, plan Plan) {
+func (o *Operator) Calls() int  {
+	return o.left.Calls() + o.right.Calls()
+}
+
+func (o *Operator) execute(ctx context.Context, wg *sync.WaitGroup, channel chan Capture, plan Plan) {
 	defer wg.Done()
 	ctx, span := trace.StartSpan(ctx, "Reactor.Operator.execute")
 	defer span.End()
-	plan.Execute(ctx)
+	plan.Execute(ctx, channel)
 }
 
 func (o *Operator) String() string {
 	return o.left.String() + "?" + o.right.String()
 }
 
-func CallOrbit(context context.Context, molecule string) {
+func CallOrbit(context context.Context, channel chan Capture, molecule string) {
 	next := config.NextOrbit()
 	var url string
 	if config.IsLocalMode() {
@@ -128,9 +144,17 @@ func CallOrbit(context context.Context, molecule string) {
 		return
 	}
 	defer ra.Body.Close()
+	decoder := json.NewDecoder(ra.Body)
+	var capture Capture
+	err = decoder.Decode(&capture)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	channel <- capture
 }
 
-func CallElement(context context.Context, symbol string) {
+func CallElement(context context.Context, channel chan Capture, symbol string) {
 	full := symbol
 	symbol = strings.Split(full, ",")[0]
 	var url string
@@ -147,4 +171,12 @@ func CallElement(context context.Context, symbol string) {
 		return
 	}
 	defer ra.Body.Close()
+	decoder := json.NewDecoder(ra.Body)
+	var capture Capture
+	err = decoder.Decode(&capture)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	channel <- capture
 }

@@ -52,6 +52,8 @@ Go to the Cloud Console, select *Trace*.
 ### Cluster
 
 *Not yet tested/supported*
+`gcloud builds submit --config=cb.yaml .`
+
 
 ## Specification
 

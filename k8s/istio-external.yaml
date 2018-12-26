@@ -1,0 +1,109 @@
+##########################
+# logging.googleapis.com #
+##########################
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: logging.googleapis.com
+spec:
+  hosts:
+    - logging.googleapis.com
+  ports:
+    - number: 443
+      name: https
+      protocol: HTTPS
+  resolution: DNS
+  location: MESH_EXTERNAL
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: logging.googleapis.com
+spec:
+  hosts:
+    - logging.googleapis.com
+  tls:
+    - match:
+        - port: 443
+          sni_hosts:
+            - logging.googleapis.com
+      route:
+        - destination:
+            host: logging.googleapis.com
+            port:
+              number: 443
+          weight: 100
+---
+##########################
+# logging.googleapis.com #
+##########################
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: cloudtrace.googleapis.com
+spec:
+  hosts:
+    - cloudtrace.googleapis.com
+  ports:
+    - number: 443
+      name: https
+      protocol: HTTPS
+  resolution: DNS
+  location: MESH_EXTERNAL
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: cloudtrace.googleapis.com
+spec:
+  hosts:
+    - cloudtrace.googleapis.com
+  tls:
+    - match:
+        - port: 443
+          sni_hosts:
+            - cloudtrace.googleapis.com
+      route:
+        - destination:
+            host: cloudtrace.googleapis.com
+            port:
+              number: 443
+          weight: 100
+---
+#########################
+# oauth2.googleapis.com #
+#########################
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: oauth2.googleapis.com
+spec:
+  hosts:
+    - oauth2.googleapis.com
+  ports:
+    - number: 443
+      name: https
+      protocol: HTTPS
+  resolution: DNS
+  location: MESH_EXTERNAL
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: oauth2.googleapis.com
+spec:
+  hosts:
+    - oauth2.googleapis.com
+  tls:
+    - match:
+        - port: 443
+          sni_hosts:
+            - oauth2.googleapis.com
+      route:
+        - destination:
+            host: oauth2.googleapis.com
+            port:
+              number: 443
+          weight: 100
+
+

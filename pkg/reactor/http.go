@@ -1,17 +1,37 @@
 package reactor
 
 import (
+	"context"
 	"contrib.go.opencensus.io/exporter/stackdriver/propagation"
+	"encoding/json"
 	"fmt"
 	"github.com/alexvanboxel/reactor/pkg/chem"
-	"github.com/alexvanboxel/reactor/pkg/resource"
 	"github.com/alexvanboxel/reactor/pkg/config"
 	"github.com/alexvanboxel/reactor/pkg/execute"
+	"github.com/alexvanboxel/reactor/pkg/resource"
 	"go.opencensus.io/plugin/ochttp"
 	"go.opencensus.io/trace"
 	"log"
 	"net/http"
 )
+
+func executePlan(w http.ResponseWriter, r *http.Request, ctx context.Context, plan execute.Plan) {
+	ch := make(chan execute.Capture, plan.Calls())
+	plan.Execute(ctx, ch)
+
+	elems := len(ch)
+	capture := execute.Capture{
+		Name:     config.AppName,
+		Headers:  r.Header,
+		Children: make([]execute.Capture, elems),
+	}
+	for i := 0; i < elems; i++ {
+		capture.Children[i] = <-ch
+	}
+
+	bytes, _ := json.MarshalIndent(capture, "", "\t")
+	w.Write(bytes)
+}
 
 func ReactorSplit(w http.ResponseWriter, r *http.Request) {
 	ctx, span := trace.StartSpan(r.Context(), "Reactor.Split")
@@ -27,8 +47,8 @@ func ReactorSplit(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(err)
 		return
 	}
-	plan.Execute(ctx)
 
+	executePlan(w, r, ctx, plan)
 	resource.Logger.Warning(ctx, "Test log")
 }
 
@@ -39,8 +59,8 @@ func ReactorOrbit(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(err)
 		return
 	}
-	plan.Execute(r.Context())
 	resource.Logger.Error(r.Context(), r, "Full error?")
+	executePlan(w, r, r.Context(), plan)
 }
 
 func ReactorAtom(w http.ResponseWriter, r *http.Request) {
@@ -50,15 +70,14 @@ func ReactorAtom(w http.ResponseWriter, r *http.Request) {
 	url := r.URL
 	symbol := url.Query().Get("symbol")
 	atom := resource.Atoms.Symbols[symbol]
-	//plan, err := execute.Parse(url.Query().Get("atom"))
-	//if err != nil {
-	//	fmt.Println(err)
-	//	return
-	//}
-	//plan.Execute(r.Context())
-	//_ = plan
 
 	resource.Logger.Info(r.Context(), "Atom %s (%s)", atom.Name, atom.Number)
+	capture := execute.Capture{
+		Name:    config.AppName,
+		Headers: r.Header,
+	}
+	bytes, _ := json.MarshalIndent(capture, "", "\t")
+	w.Write(bytes)
 }
 
 func ReactorHealthz(w http.ResponseWriter, r *http.Request) {

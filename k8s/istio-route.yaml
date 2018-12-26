@@ -1,0 +1,18 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: reactor
+spec:
+  hosts:
+    - "reactor-istio.ioto.pe"
+  gateways:
+    - reactor-gateway
+  http:
+    - match:
+        - uri:
+            prefix: /rr
+      route:
+        - destination:
+            port:
+              number: 80
+            host: reactor-api

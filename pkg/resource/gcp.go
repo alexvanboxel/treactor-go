@@ -73,41 +73,54 @@ func initLoggingClient(wg *sync.WaitGroup, projectId string) () {
 
 func initMonitoredResource(projectId string) {
 	if config.IsKubernetesMode() {
-		if metadata.OnGCE() {
-			// see: https://cloud.google.com/monitoring/api/resources#tag_k8s_container
-			MonitoredResource = &mrpb.MonitoredResource{
-				Type:   "k8s_container",
-				Labels: make(map[string]string),
-			}
-			MonitoredResource.Labels["namespace_name"] = os.Getenv("POD_NAMESPACE")
-			MonitoredResource.Labels["pod_name"] = os.Getenv("POD_NAME")
-			MonitoredResource.Labels["container_name"] = config.AppName
-			MonitoredResource.Labels["project_id"] = projectId
-			clusterName, err := metadata.InstanceAttributeValue("cluster-name")
-			if err != nil {
-				log.Fatalf("Failed to get cluster_name from meta data server: %v", err)
-			}
-			MonitoredResource.Labels["cluster_name"] = clusterName
-			clusterLocation, err := metadata.InstanceAttributeValue("cluster-location")
-			if err != nil {
-				log.Fatalf("Failed to get cluster_location from meta data server: %v", err)
-			}
-			MonitoredResource.Labels["location"] = clusterLocation
-			fmt.Printf("* Google Cloud: MonitoredResource set to k8s_container.\n")
-		} else {
-			fmt.Printf("! Google Cloud: Meta Server not accessible, couldn't configure MonitoredResource.\n")
-		}
+		initMonitoredResourceAsK8SContainer(projectId)
 	}
 
 	if MonitoredResource == nil {
-		// see: https://cloud.google.com/monitoring/api/resources#tag_global
-		MonitoredResource = &mrpb.MonitoredResource{
-			Type:   "global",
+		initMonitoredResourceAsGlobal(projectId)
+	}
+}
+
+func initMonitoredResourceAsK8SContainer(projectId string) {
+	if metadata.OnGCE() {
+		// see: https://cloud.google.com/monitoring/api/resources#tag_k8s_container
+		mr := &mrpb.MonitoredResource{
+			Type:   "k8s_container",
 			Labels: make(map[string]string),
 		}
-		MonitoredResource.Labels["project_id"] = projectId
-		fmt.Printf("* Google Cloud: MonitoredResource set to global.\n")
+		mr.Labels["namespace_name"] = os.Getenv("POD_NAMESPACE")
+		mr.Labels["pod_name"] = os.Getenv("POD_NAME")
+		mr.Labels["container_name"] = config.AppName
+		mr.Labels["project_id"] = projectId
+		clusterName, err := metadata.InstanceAttributeValue("cluster-name")
+		if err != nil {
+			fmt.Printf("! Google Cloud: Failed to get cluster_name from meta data server: %v\n", err)
+			return
+		}
+		mr.Labels["cluster_name"] = clusterName
+		clusterLocation, err := metadata.InstanceAttributeValue("cluster-location")
+		if err != nil {
+			fmt.Printf("! Google Cloud:Failed to get cluster_location from meta data server: %v\n", err)
+			return
+		}
+		mr.Labels["location"] = clusterLocation
+		MonitoredResource = mr
+		fmt.Printf("* Google Cloud: MonitoredResource set to k8s_container.\n")
+	} else {
+		fmt.Printf("! Google Cloud: Meta Server not accessible, couldn't configure MonitoredResource.\n")
 	}
+
+}
+
+func initMonitoredResourceAsGlobal(projectId string) {
+	// see: https://cloud.google.com/monitoring/api/resources#tag_global
+	MonitoredResource = &mrpb.MonitoredResource{
+		Type:   "global",
+		Labels: make(map[string]string),
+	}
+	MonitoredResource.Labels["project_id"] = projectId
+	fmt.Printf("* Google Cloud: MonitoredResource set to global.\n")
+
 }
 
 // Get a single pubsub client and attach it to the background context
@@ -122,10 +135,10 @@ func initPubSubCient(wg *sync.WaitGroup, projectId string) () {
 	fmt.Printf("* Google Cloud: PubSub initialized.\n")
 }
 
-func initCencus(wg *sync.WaitGroup) {
+func initCencus(wg *sync.WaitGroup, projectId string) {
 	defer wg.Done()
 	sd, err := stackdriver.NewExporter(stackdriver.Options{
-		//ProjectID: projectId,
+		ProjectID: projectId,
 	})
 	if err != nil {
 		log.Fatal(err)
@@ -175,7 +188,7 @@ func GoogleCloudInit() {
 	go initProfiler(&wg)
 	go initLoggingClient(&wg, projectID)
 	go initPubSubCient(&wg, projectID)
-	go initCencus(&wg)
+	go initCencus(&wg, projectID)
 	wg.Wait()
 	fmt.Printf("Finished initializing reactor.\n")
 }
