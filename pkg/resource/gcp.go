@@ -184,10 +184,10 @@ func GoogleCloudInit() {
 	projectID := os.Getenv("GOOGLE_PROJECT_ID")
 	initMonitoredResource(projectID)
 	wg := sync.WaitGroup{}
-	wg.Add(4)
+	wg.Add(3)
 	go initProfiler(&wg)
 	go initLoggingClient(&wg, projectID)
-	go initPubSubCient(&wg, projectID)
+	//go initPubSubCient(&wg, projectID)
 	go initCencus(&wg, projectID)
 	wg.Wait()
 	fmt.Printf("Finished initializing reactor.\n")

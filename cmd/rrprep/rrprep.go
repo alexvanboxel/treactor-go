@@ -148,7 +148,7 @@ func deploy(atoms *chem.Atoms) {
 }
 
 func main() {
-	fmt.Println("prep started.")
+	fmt.Println("Reactor Prepare (rrprep) started.")
 	flag.StringVar(&Project, "project", "", "df")
 	flag.Parse()
 
