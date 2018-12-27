@@ -33,22 +33,29 @@ func executePlan(w http.ResponseWriter, r *http.Request, ctx context.Context, pl
 }
 
 func ReactorSplit(w http.ResponseWriter, r *http.Request) {
-	ctx, span := trace.StartSpan(r.Context(), "Reactor.Split")
-	defer span.End()
+	// If REACTOR_TRACE_INTERNAL=1 add internal spans
+	ctx := r.Context()
+	if config.TraceInternal() {
+		context, span := trace.StartSpan(r.Context(), "Reactor.Split")
+		defer span.End()
+		ctx = context
+	}
 	//_, span := trace.StartSpan(r.Context(), "split.Get")
 	//defer span.End()
 	//span.Annotate([]trace.Attribute{trace.StringAttribute("key", "value")}, "something happened")
 	//span.AddAttributes(trace.StringAttribute("hello", "world"))
-
 	url := r.URL
-	plan, err := execute.Parse(url.Query().Get("molecule"))
+	molecule := url.Query().Get("molecule")
+	resource.Logger.InfoF(ctx, "Starting reaction for molecule %s", molecule)
+
+	plan, err := execute.Parse(molecule)
 	if err != nil {
-		fmt.Println(err)
+		resource.Logger.ErrorErr(ctx, r, "Unable to parse molecule", err)
 		return
 	}
 
 	executePlan(w, r, ctx, plan)
-	resource.Logger.Warning(ctx, "Test log")
+	resource.Logger.WarningF(ctx, "Cooling down reaction, finished %s", molecule)
 }
 
 func ReactorOrbit(w http.ResponseWriter, r *http.Request) {
@@ -70,7 +77,7 @@ func ReactorAtom(w http.ResponseWriter, r *http.Request) {
 	symbol := url.Query().Get("symbol")
 	atom := resource.Atoms.Symbols[symbol]
 
-	resource.Logger.Info(r.Context(), "Atom %s (%s)", atom.Name, atom.Number)
+	resource.Logger.InfoF(r.Context(), "Atom %s (%d)", atom.Name, atom.Number)
 	capture := execute.Capture{
 		Name:    config.AppName,
 		Headers: r.Header,

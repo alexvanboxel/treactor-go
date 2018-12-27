@@ -54,6 +54,10 @@ spec:
               value: '1'
             - name: REACTOR_PROFILE
               value: '0'
+            - name: REACTOR_TRACE_PROPAGATION
+              value: 'stackdriver'
+            - name: REACTOR_TRACE_INTERNAL
+              value: '1'
             - name: GOOGLE_PROJECT_ID
               value: '{{.Project}}'
             - name: GOOGLE_APPLICATION_CREDENTIALS

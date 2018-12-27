@@ -109,14 +109,21 @@ http://localhost:3330/rr/split?molecule=[[H]]^2[O]
 
 Go to the Cloud Console, select *Trace*.
 
-### Cluster
+### Kubernetes
 
-*Not yet tested/supported*
+*Not yet fully tested/supported*
 
 `gcloud builds submit --config=cb.yaml .`
 
 `go install ./cmd/rrprep/`
 
+`kubectl label namespace default istio-injection=disabled --overwrite`
+
+### Istio
+
+*Not yet fully tested/supported*
+
+`kubectl label namespace default istio-injection=enabled --overwrite`
 
 ## Specification
 

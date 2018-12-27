@@ -53,7 +53,7 @@ func newREntry(rLogger *RLogger, severity logging.Severity) *rEntry {
 	return &rEntry{
 		rLogger: rLogger,
 		entry: logging.Entry{
-			Severity: logging.Error,
+			Severity: severity,
 			Resource: rLogger.monitoredResource,
 		},
 	}
@@ -67,9 +67,13 @@ func (e *rEntry) addSpan(ctx context.Context) {
 	}
 }
 
-func (e *rEntry) addPayLoad(request *http.Request, s string, a ...interface{}) {
+func (e *rEntry) addPayLoadFormatted(request *http.Request, s string, a ...interface{}) {
+	e.addPayLoad(request, fmt.Sprintf(s, a...))
+}
+
+func (e *rEntry) addPayLoad(request *http.Request, message string) {
 	e.payLoad = rPayLoad{
-		Message: fmt.Sprintf(s, a...),
+		Message: message,
 		ServiceContext: rServiceContext{
 			Service: "reactor",
 			Version: "1",

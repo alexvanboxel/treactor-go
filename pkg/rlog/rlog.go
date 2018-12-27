@@ -33,33 +33,46 @@ func (l *RLogger) addSpan(ctx context.Context, entry *logging.Entry) *logging.En
 	return entry
 }
 
-func (l *RLogger) Info(ctx context.Context, format string, a ...interface{}) {
-	message := fmt.Sprintf(format, a...)
+func (l *RLogger) InfoF(ctx context.Context, format string, a ...interface{}) {
+	l.log(ctx, logging.Info, fmt.Sprintf(format, a...))
+}
+
+func (l *RLogger) Info(ctx context.Context, message string) {
+	l.log(ctx, logging.Info, message)
+}
+
+func (l *RLogger) WarningF(ctx context.Context, format string, a ...interface{}) {
+	l.log(ctx, logging.Warning, fmt.Sprintf(format, a...))
+}
+
+func (l *RLogger) Warning(ctx context.Context, message string) {
+	l.log(ctx, logging.Warning, message)
+}
+
+func (l *RLogger) log(ctx context.Context, severity logging.Severity, message string) {
 	entry := l.addSpan(ctx, &logging.Entry{
-		Severity: logging.Info,
+		Severity: severity,
 		Payload:  message,
 		Resource: l.monitoredResource,
 	})
 	l.logger.Log(*entry)
 }
 
-func (l *RLogger) Error(ctx context.Context, r *http.Request, format string, a ...interface{}) {
+func (l *RLogger) Error(ctx context.Context, r *http.Request, message string) {
 	entry := newREntry(l, logging.Error)
-	entry.addPayLoad(r, format, a)
+	entry.addPayLoad(r, message)
 	entry.addSpan(ctx)
 	entry.addErrorLocation()
 	entry.addStackTrace()
 	entry.log()
 }
 
-func (l *RLogger) Warning(ctx context.Context, format string, a ...interface{}) {
-	message := fmt.Sprintf(format, a...)
-	entry := l.addSpan(ctx, &logging.Entry{
-		Severity: logging.Warning,
-		Payload:  message,
-		Resource: l.monitoredResource,
-	})
-	l.logger.Log(*entry)
+func (l *RLogger) ErrorErr(ctx context.Context, r *http.Request, message string, err error) {
+	l.Error(ctx, r, fmt.Sprintf("%s: %s", message, err.Error()))
+}
+
+func (l *RLogger) ErrorF(ctx context.Context, r *http.Request, format string, a ...interface{}) {
+	l.Error(ctx, r, fmt.Sprintf(format, a...))
 }
 
 func (l *RLogger) Flush() {

@@ -39,21 +39,33 @@ func (o *Block) isAtom() bool {
 
 func (o *Block) callElement(ctx context.Context, wg *sync.WaitGroup, channel chan Capture) {
 	defer wg.Done()
-	ctx, span := trace.StartSpan(ctx, "Reactor.Block.callElement")
-	defer span.End()
+	// If REACTOR_TRACE_INTERNAL=1 add internal spans
+	if config.TraceInternal() {
+		context, span := trace.StartSpan(ctx, "Reactor.Block.callElement")
+		defer span.End()
+		ctx = context
+	}
 	CallElement(ctx, channel, o.block)
 }
 
 func (o *Block) callOrbit(ctx context.Context, wg *sync.WaitGroup, channel chan Capture) {
 	defer wg.Done()
-	ctx, span := trace.StartSpan(ctx, "Reactor.Block.callOrbit")
-	defer span.End()
+	// If REACTOR_TRACE_INTERNAL=1 add internal spans
+	if config.TraceInternal() {
+		context, span := trace.StartSpan(ctx, "Reactor.Block.callOrbit")
+		defer span.End()
+		ctx = context
+	}
 	CallOrbit(ctx, channel, o.block)
 }
 
 func (o *Block) Execute(ctx context.Context, channel chan Capture) {
-	ctx, span := trace.StartSpan(ctx, "Reactor.Block")
-	defer span.End()
+	// If REACTOR_TRACE_INTERNAL=1 add internal spans
+	if config.TraceInternal() {
+		context, span := trace.StartSpan(ctx, "Reactor.Block")
+		defer span.End()
+		ctx = context
+	}
 	wg := sync.WaitGroup{}
 	wg.Add(o.times)
 	if o.mode == "s" {
@@ -97,8 +109,12 @@ type Operator struct {
 }
 
 func (o *Operator) Execute(ctx context.Context, channel chan Capture) {
-	ctx, span := trace.StartSpan(ctx, "Reactor.Operator")
-	defer span.End()
+	// If REACTOR_TRACE_INTERNAL=1 add internal spans
+	if config.TraceInternal() {
+		context, span := trace.StartSpan(ctx, "Reactor.Operator")
+		defer span.End()
+		ctx = context
+	}
 	wg := sync.WaitGroup{}
 	wg.Add(2)
 	if o.operand == PLUS {
@@ -119,8 +135,12 @@ func (o *Operator) Calls() int  {
 
 func (o *Operator) execute(ctx context.Context, wg *sync.WaitGroup, channel chan Capture, plan Plan) {
 	defer wg.Done()
-	ctx, span := trace.StartSpan(ctx, "Reactor.Operator.execute")
-	defer span.End()
+	// If REACTOR_TRACE_INTERNAL=1 add internal spans
+	if config.TraceInternal() {
+		context, span := trace.StartSpan(ctx, "Reactor.Operator.execute")
+		defer span.End()
+		ctx = context
+	}
 	plan.Execute(ctx, channel)
 }
 

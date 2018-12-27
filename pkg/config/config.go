@@ -66,3 +66,10 @@ func TracePropagation() oc.HTTPFormat {
 		return &stackdriver.HTTPFormat{}
 	}
 }
+
+func TraceInternal() bool {
+	if traceInternal == "1" {
+		return true
+	}
+	return false
+}
