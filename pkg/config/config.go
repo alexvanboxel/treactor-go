@@ -1,7 +1,7 @@
 package config
 
 import (
-	stackdriver "go.opencensus.io/exporter/stackdriver/propagation"
+	stackdriver "contrib.go.opencensus.io/exporter/stackdriver/propagation"
 	"go.opencensus.io/plugin/ochttp/propagation/b3"
 	oc "go.opencensus.io/trace/propagation"
 	"os"

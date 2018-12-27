@@ -176,13 +176,20 @@
   revision = "1dc9a6cbc91aacc3e8b2d63db4d2e957a5394ac4"
 
 [[projects]]
-  digest = "1:cd3f6b0234ddd3bcc2d7fbe89e678e2a8786c5e0beb975bd2653cd0b44b0c807"
+  digest = "1:2e76a73cb51f42d63a2a1a85b3dc5731fd4faf6821b434bd0ef2c099186031d6"
+  name = "github.com/rs/xid"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "15d26544def341f036c5f8dca987a4cbe575032c"
+  version = "v1.2.1"
+
+[[projects]]
+  digest = "1:54a5f0d5b80bf403deb80cedff6c97c5169426b6430ef717bc931584e6afb893"
   name = "go.opencensus.io"
   packages = [
     ".",
     "exemplar",
     "exporter/prometheus",
-    "exporter/stackdriver/propagation",
     "internal",
     "internal/tagencoding",
     "plugin/ocgrpc",
@@ -398,12 +405,15 @@
     "cloud.google.com/go/pubsub",
     "contrib.go.opencensus.io/exporter/stackdriver",
     "contrib.go.opencensus.io/exporter/stackdriver/propagation",
+    "github.com/rs/xid",
     "go.opencensus.io/exporter/prometheus",
-    "go.opencensus.io/exporter/stackdriver/propagation",
     "go.opencensus.io/plugin/ochttp",
+    "go.opencensus.io/plugin/ochttp/propagation/b3",
     "go.opencensus.io/stats/view",
     "go.opencensus.io/trace",
+    "go.opencensus.io/trace/propagation",
     "go.opencensus.io/zpages",
+    "golang.org/x/net/context",
     "google.golang.org/genproto/googleapis/api/monitoredres",
     "gopkg.in/yaml.v2",
   ]

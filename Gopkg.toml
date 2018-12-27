@@ -7,3 +7,7 @@
 [[constraint]]
   name = "cloud.google.com/go"
   version = "0.34.0"
+
+[[constraint]]
+  name = "github.com/rs/xid"
+  version = "1.2.1"

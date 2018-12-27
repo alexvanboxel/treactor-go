@@ -4,6 +4,7 @@ import (
 	"cloud.google.com/go/logging"
 	"context"
 	"fmt"
+	"github.com/rs/xid"
 	"go.opencensus.io/trace"
 	"net/http"
 	"runtime"
@@ -96,10 +97,13 @@ func (e *rEntry) addErrorLocation() {
 	}
 }
 
-func (e *rEntry) log() {
+func (e *rEntry) log() string {
+	guid := xid.New().String()
 	entry := e.entry
+	entry.InsertID = guid
 	entry.Payload = e.payLoad
 	e.rLogger.logger.Log(entry)
+	return guid
 }
 
 func (e *rEntry) addStackTrace() {
