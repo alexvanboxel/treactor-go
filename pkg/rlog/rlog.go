@@ -58,21 +58,21 @@ func (l *RLogger) log(ctx context.Context, severity logging.Severity, message st
 	l.logger.Log(*entry)
 }
 
-func (l *RLogger) Error(ctx context.Context, r *http.Request, message string) {
+func (l *RLogger) Error(ctx context.Context, r *http.Request, message string) string {
 	entry := newREntry(l, logging.Error)
 	entry.addPayLoad(r, message)
 	entry.addSpan(ctx)
 	entry.addErrorLocation()
 	entry.addStackTrace()
-	entry.log()
+	return entry.log()
 }
 
-func (l *RLogger) ErrorErr(ctx context.Context, r *http.Request, message string, err error) {
-	l.Error(ctx, r, fmt.Sprintf("%s: %s", message, err.Error()))
+func (l *RLogger) ErrorErr(ctx context.Context, r *http.Request, message string, err error) string {
+	return l.Error(ctx, r, fmt.Sprintf("%s: %s", message, err.Error()))
 }
 
-func (l *RLogger) ErrorF(ctx context.Context, r *http.Request, format string, a ...interface{}) {
-	l.Error(ctx, r, fmt.Sprintf(format, a...))
+func (l *RLogger) ErrorF(ctx context.Context, r *http.Request, format string, a ...interface{}) string {
+	return l.Error(ctx, r, fmt.Sprintf(format, a...))
 }
 
 func (l *RLogger) Flush() {

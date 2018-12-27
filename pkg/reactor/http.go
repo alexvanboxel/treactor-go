@@ -14,6 +14,10 @@ import (
 	"net/http"
 )
 
+type ErrorResponse struct {
+	InsertId string
+}
+
 func executePlan(w http.ResponseWriter, r *http.Request, ctx context.Context, plan execute.Plan) {
 	ch := make(chan execute.Capture, plan.Calls())
 	plan.Execute(ctx, ch)
@@ -29,6 +33,18 @@ func executePlan(w http.ResponseWriter, r *http.Request, ctx context.Context, pl
 	}
 
 	bytes, _ := json.MarshalIndent(capture, "", "\t")
+	w.Header().Set("Content-Type","application/json")
+	w.Write(bytes)
+}
+
+func failure(ctx context.Context, w http.ResponseWriter, r *http.Request, message string, err error) {
+	insertId := resource.Logger.ErrorErr(ctx, r, message, err)
+	errorResponse := &ErrorResponse{
+		InsertId: insertId,
+	}
+	w.WriteHeader(400)
+	w.Header().Set("Content-Type","application/json")
+	bytes, _ := json.MarshalIndent(errorResponse, "", "\t")
 	w.Write(bytes)
 }
 
@@ -50,7 +66,7 @@ func ReactorSplit(w http.ResponseWriter, r *http.Request) {
 
 	plan, err := execute.Parse(molecule)
 	if err != nil {
-		resource.Logger.ErrorErr(ctx, r, "Unable to parse molecule", err)
+		failure(ctx, w, r, "Unable to parse molecule", err)
 		return
 	}
 
@@ -62,10 +78,9 @@ func ReactorOrbit(w http.ResponseWriter, r *http.Request) {
 	url := r.URL
 	plan, err := execute.Parse(url.Query().Get("molecule"))
 	if err != nil {
-		fmt.Println(err)
+		failure(r.Context(), w, r, "Unable to parse molecule", err)
 		return
 	}
-	resource.Logger.Error(r.Context(), r, "Full error?")
 	executePlan(w, r, r.Context(), plan)
 }
 
@@ -83,6 +98,7 @@ func ReactorAtom(w http.ResponseWriter, r *http.Request) {
 		Headers: r.Header,
 	}
 	bytes, _ := json.MarshalIndent(capture, "", "\t")
+	w.Header().Set("Content-Type","application/json")
 	w.Write(bytes)
 }
 
