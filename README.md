@@ -1,7 +1,3 @@
-> Reactor is using a patched version of google-cloud-go. The patch is submitted but is waiting a release, do not
-> update the dependencies (dep). This block will be removed when it's safe to update.
-> If you really have to, run  `git checkout -- vendor/cloud.google.com/go/logging/logging.go` to restore the patch.
-
 # Reactor
 
 Reactor is a microservice designed to test and experiment with observability of microservices. You can play with it

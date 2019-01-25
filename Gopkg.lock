@@ -2,7 +2,7 @@
 
 
 [[projects]]
-  digest = "1:4dbcf7d4384f04839c61ec66d22c0c27d7c7965748dde197ce8cd02394b47861"
+  digest = "1:384df6b3906a1d3a2bab84a56dad1f36c9cbaf112f2a2d5f06d1cb5d7894431c"
   name = "cloud.google.com/go"
   packages = [
     "compute/metadata",
@@ -20,8 +20,8 @@
     "trace/apiv2",
   ]
   pruneopts = "UT"
-  revision = "0ebda48a7f143b1cce9eb37a8c1106ac762a3430"
-  version = "v0.34.0"
+  revision = "28a4bc8c44b3acbcc482cff0cdf7de29a4688b61"
+  version = "v0.35.1"
 
 [[projects]]
   digest = "1:d8ffa45a1c0c8d385675e3176453002224d89801a76fdfa0f61c9af1270df46a"
@@ -108,9 +108,9 @@
   revision = "3ea8567a2e5752420fc544d2e2ad249721768934"
 
 [[projects]]
-  digest = "1:e04cc716992a302cacf6d726409a05aa9546241998b24356d6dd0f01bc5a374e"
+  digest = "1:5e8f73a8323746973118b6d3f1527395c864238b299046d6a4ae764908ab7498"
   name = "github.com/googleapis/gax-go"
-  packages = ["."]
+  packages = ["v2"]
   pruneopts = "UT"
   revision = "b001040cd31805261cbd978842099e326dfa857b"
   version = "v2.0.2"
