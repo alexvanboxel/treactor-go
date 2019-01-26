@@ -33,7 +33,7 @@ func executePlan(w http.ResponseWriter, r *http.Request, ctx context.Context, pl
 	}
 
 	bytes, _ := json.MarshalIndent(capture, "", "\t")
-	w.Header().Set("Content-Type","application/json")
+	w.Header().Set("Content-Type", "application/json")
 	w.Write(bytes)
 }
 
@@ -43,7 +43,7 @@ func failure(ctx context.Context, w http.ResponseWriter, r *http.Request, messag
 		InsertId: insertId,
 	}
 	w.WriteHeader(400)
-	w.Header().Set("Content-Type","application/json")
+	w.Header().Set("Content-Type", "application/json")
 	bytes, _ := json.MarshalIndent(errorResponse, "", "\t")
 	w.Write(bytes)
 }
@@ -98,7 +98,7 @@ func ReactorAtom(w http.ResponseWriter, r *http.Request) {
 		Headers: r.Header,
 	}
 	bytes, _ := json.MarshalIndent(capture, "", "\t")
-	w.Header().Set("Content-Type","application/json")
+	w.Header().Set("Content-Type", "application/json")
 	w.Write(bytes)
 }
 

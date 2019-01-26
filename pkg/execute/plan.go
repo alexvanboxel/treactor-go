@@ -157,6 +157,8 @@ func CallOrbit(context context.Context, channel chan Capture, molecule string) {
 		url = fmt.Sprintf("http://orbit-%s%s/orbit/%s?molecule=%s", next, config.Base, next, molecule)
 	}
 	req, _ := http.NewRequest("GET", url, nil)
+	token, _ := resource.TokenSource.Token()
+	req.Header.Set("Authorization","Bearer: "+ token.AccessToken)
 	req = req.WithContext(context)
 	ra, err := resource.HttpClient.Do(req)
 	if err != nil {
@@ -184,6 +186,8 @@ func CallElement(context context.Context, channel chan Capture, symbol string) {
 		url = fmt.Sprintf("http://atom-%s%s/atom/%s?symbol=%s", strings.ToLower(symbol), config.Base, symbol, full)
 	}
 	req, _ := http.NewRequest("GET", url, nil)
+	token, _ := resource.TokenSource.Token()
+	req.Header.Set("Authorization","Bearer: "+ token.AccessToken)
 	req = req.WithContext(context)
 	ra, err := resource.HttpClient.Do(req)
 	if err != nil {

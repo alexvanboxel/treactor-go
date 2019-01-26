@@ -14,7 +14,10 @@ import (
 	"go.opencensus.io/stats/view"
 	"go.opencensus.io/trace"
 	"go.opencensus.io/zpages"
+	"golang.org/x/oauth2"
+	"golang.org/x/oauth2/google"
 	mrpb "google.golang.org/genproto/googleapis/api/monitoredres"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -26,6 +29,7 @@ var (
 	LoggingClient     *logging.Client
 	MonitoredResource *mrpb.MonitoredResource
 	Logger            *rlog.RLogger
+	TokenSource       oauth2.TokenSource
 )
 
 type PubSub struct {
@@ -179,10 +183,17 @@ func initProfiler(wg *sync.WaitGroup) {
 	}
 }
 
+func initToken() {
+	key, _ := ioutil.ReadFile(os.Getenv("GOOGLE_APPLICATION_CREDENTIALS"))
+	ts, _ := google.JWTAccessTokenSourceFromJSON(key, config.AppName)
+	TokenSource = ts
+}
+
 func GoogleCloudInit() {
 	fmt.Printf("Start initializing reactor.\n")
 	projectID := os.Getenv("GOOGLE_PROJECT_ID")
 	initMonitoredResource(projectID)
+	initToken()
 	wg := sync.WaitGroup{}
 	wg.Add(3)
 	go initProfiler(&wg)

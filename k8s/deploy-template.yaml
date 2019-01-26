@@ -51,13 +51,13 @@ spec:
             - name: REACTOR_MODE
               value: 'k8s'
             - name: REACTOR_DEBUG
-              value: '1'
+              value: '0'
             - name: REACTOR_PROFILE
               value: '0'
             - name: REACTOR_TRACE_PROPAGATION
-              value: 'stackdriver'
+              value: 'b3'
             - name: REACTOR_TRACE_INTERNAL
-              value: '1'
+              value: '0'
             - name: GOOGLE_PROJECT_ID
               value: '{{.Project}}'
             - name: GOOGLE_APPLICATION_CREDENTIALS
