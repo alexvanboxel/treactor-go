@@ -1,7 +1,7 @@
 package resource
 
 import (
-	"github.com/alexvanboxel/reactor/pkg/chem"
+	"github.com/alexvanboxel/treactor-go/pkg/chem"
 )
 
 var Atoms *chem.Atoms

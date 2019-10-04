@@ -2,7 +2,7 @@ package reactor
 
 import (
 	"encoding/json"
-	"github.com/alexvanboxel/reactor/pkg/resource"
+	"github.com/alexvanboxel/treactor-go/pkg/resource"
 	"io/ioutil"
 	"net/http"
 )

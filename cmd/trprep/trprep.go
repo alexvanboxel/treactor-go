@@ -4,7 +4,7 @@ import (
 	"encoding/base64"
 	"flag"
 	"fmt"
-	"github.com/alexvanboxel/reactor/pkg/chem"
+	"github.com/alexvanboxel/treactor-go/pkg/chem"
 	"io/ioutil"
 	"log"
 	"os"

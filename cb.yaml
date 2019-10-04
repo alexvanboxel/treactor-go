@@ -1,8 +1,8 @@
 steps:
   - name: 'gcr.io/cloud-builders/go'
     env:
-    - "PROJECT_ROOT=github.com/alexvanboxel/reactor"
-    args: ['install', 'github.com/alexvanboxel/reactor/cmd/reactor']
+    - "PROJECT_ROOT=github.com/alexvanboxel/treactor-go"
+    args: ['install', 'github.com/alexvanboxel/treactor-go/cmd/reactor']
   - name: 'gcr.io/cloud-builders/docker'
     args: [ 'build', '-t', 'eu.gcr.io/$PROJECT_ID/reactor:latest', '.' ]
 images:

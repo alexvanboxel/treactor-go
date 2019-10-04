@@ -3,8 +3,8 @@ package execute
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/alexvanboxel/reactor/pkg/resource"
-	"github.com/alexvanboxel/reactor/pkg/config"
+	"github.com/alexvanboxel/treactor-go/pkg/resource"
+	"github.com/alexvanboxel/treactor-go/pkg/config"
 	"go.opencensus.io/trace"
 	"golang.org/x/net/context"
 	"net/http"

@@ -1,7 +1,7 @@
 package resource
 
 import (
-	"github.com/alexvanboxel/reactor/pkg/config"
+	"github.com/alexvanboxel/treactor-go/pkg/config"
 	"go.opencensus.io/plugin/ochttp"
 	"net/http"
 )
