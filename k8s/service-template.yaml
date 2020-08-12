@@ -9,13 +9,9 @@ spec:
     - name: http
       port: 80
       protocol: TCP
-      targetPort: http
-    - name: grpc
-      port: 82
-      protocol: TCP
-      targetPort: grpc
+      targetPort: 3330
   selector:
     app: {{.Module}}-{{.Component}}
   sessionAffinity: None
-#  type: ClusterIP
-  type: NodePort
+  type: ClusterIP
+#  type: NodePort

@@ -21,7 +21,7 @@ spec:
             secretName: reactor-service-account
       containers:
         - name: {{.Module}}-{{.Component}}
-          image: eu.gcr.io/{{.Project}}/reactor:latest
+          image: eu.gcr.io/{{.Project}}/treactor:4
           imagePullPolicy: Always
           volumeMounts:
             - mountPath: /var/run/secrets/quantum/google-service-account
@@ -55,7 +55,7 @@ spec:
             - name: REACTOR_PROFILE
               value: '0'
             - name: REACTOR_TRACE_PROPAGATION
-              value: 'stackdriver'
+              value: 'b3'
             - name: REACTOR_TRACE_INTERNAL
               value: '1'
             - name: GOOGLE_PROJECT_ID

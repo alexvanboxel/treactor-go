@@ -4,9 +4,9 @@ metadata:
   name: reactor
 spec:
   hosts:
-    - "reactor-istio.ioto.pe"
+    - "treactor-asm.ioto.pe"
   gateways:
-    - reactor-gateway
+    - system/instance-gateway
   http:
     - match:
         - uri:

@@ -1,0 +1,13 @@
+apiVersion: install.istio.io/v1alpha1
+kind: IstioOperator
+metadata:
+  name: trace-all
+spec:
+  meshConfig:
+    enableTracing: true
+  values:
+    pilot:
+      traceSampling: 100
+    global:
+      proxy:
+        tracer: stackdriver
