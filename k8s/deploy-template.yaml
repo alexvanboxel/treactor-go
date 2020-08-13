@@ -21,10 +21,10 @@ spec:
             secretName: reactor-service-account
       containers:
         - name: {{.Module}}-{{.Component}}
-          image: eu.gcr.io/{{.Project}}/treactor:4
+          image: eu.gcr.io/{{.Project}}/treactor:10
           imagePullPolicy: Always
           volumeMounts:
-            - mountPath: /var/run/secrets/quantum/google-service-account
+            - mountPath: /var/run/secrets/google
               name: reactor-service-account
           env:
             - name: PORT
@@ -32,7 +32,7 @@ spec:
             - name: APP_NAME
               value: '{{.Module}}-{{.Component}}'
             - name: APP_VERSION
-              value: '1'
+              value: '7'
             - name: POD_NAME
               valueFrom:
                 fieldRef:
@@ -53,7 +53,7 @@ spec:
             - name: REACTOR_DEBUG
               value: '1'
             - name: REACTOR_PROFILE
-              value: '0'
+              value: '1'
             - name: REACTOR_TRACE_PROPAGATION
               value: 'b3'
             - name: REACTOR_TRACE_INTERNAL
@@ -61,7 +61,7 @@ spec:
             - name: GOOGLE_PROJECT_ID
               value: '{{.Project}}'
             - name: GOOGLE_APPLICATION_CREDENTIALS
-              value: '/var/run/secrets/quantum/google-service-account/service-account.json'
+              value: '/var/run/secrets/google/service-account.json'
           ports:
             - containerPort: 3330
               name: http

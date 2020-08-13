@@ -1,17 +1,25 @@
-# Start by building the application.
-FROM golang:1.13-buster as build
+FROM golang:1.11-buster as debugger
+
+WORKDIR /go/src/app
+RUN go get -u cloud.google.com/go/cmd/go-cloud-debug-agent
+
+
+FROM golang:1.11-buster as build
 
 WORKDIR /go/src/app
 ADD . /go/src/app
 
-#RUN go get -d -v ./...
-
-RUN go build cmd/treactor/main.go
+RUN CGO_ENABLED=0 GO111MODULE=on go build -gcflags=all='-N -l' cmd/treactor/main.go
 
 # Now copy it into our base image.
 FROM gcr.io/distroless/base-debian10
+COPY --from=debugger /go/bin/go-cloud-debug-agent /go-cloud-debug-agent
 COPY --from=build /go/src/app/main /treactor
-CMD ["/treactor"]
+COPY --from=build /go/src/app/elements.yaml elements.yaml
+ADD source-context.json /
+
+#CMD ["/treactor"]
+CMD ["/go-cloud-debug-agent", "-sourcecontext=/source-context.json", "-appmodule=main", "-appversion=7", "--", "/treactor"]
 
 
 
